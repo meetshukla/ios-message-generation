@@ -1,0 +1,11 @@
+{
+  "name": "ios-message-generation",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "capture": "node capture.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "1.54.2"
+  }
+}

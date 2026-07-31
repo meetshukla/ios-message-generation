@@ -1,0 +1,1761 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>iOS 26 Messages renderer</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      --blue-top: #3c85f8;
+      --blue-bottom: #3c85f8;
+      --received: #e9e9eb;
+      --label: #000;
+      --secondary: #747478;
+      --keyboard: #d0d3d8;
+      --key: rgba(255,255,255,.96);
+      --glass: rgba(248,248,250,.72);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #fff; }
+    body { user-select: none; -webkit-font-smoothing: antialiased; }
+
+    #camera {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #fff;
+      transform-origin: 50% 58%;
+      will-change: transform;
+    }
+
+    .status {
+      position: absolute;
+      inset: 0 0 auto;
+      height: 92px;
+      z-index: 20;
+      color: #050505;
+      font-size: 32px;
+      font-weight: 650;
+      background: linear-gradient(180deg, #f4f4f5 0%, rgba(249,249,250,.94) 100%);
+    }
+    .status-time { position: absolute; left: 60px; top: 48px; }
+    .silent-icon {
+      position: absolute;
+      left: 145px;
+      top: 50px;
+      width: 28px;
+      height: 28px;
+      color: #050505;
+    }
+    .island {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      width: 226px;
+      height: 62px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: #000;
+    }
+    .status-icons {
+      position: absolute;
+      right: 50px;
+      top: 50px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+    .cell-bars { display: flex; align-items: end; gap: 3px; height: 23px; }
+    .cell-bars i { display: block; width: 6px; border-radius: 2px; background: #050505; }
+    .cell-bars i:nth-child(1) { height: 8px; }
+    .cell-bars i:nth-child(2) { height: 13px; }
+    .cell-bars i:nth-child(3) { height: 18px; }
+    .cell-bars i:nth-child(4) { height: 23px; }
+    .wifi {
+      width: 27px;
+      height: 20px;
+      border: 4px solid #050505;
+      border-left-color: transparent;
+      border-right-color: transparent;
+      border-bottom-color: transparent;
+      border-radius: 50% 50% 0 0;
+      position: relative;
+      margin-top: 9px;
+    }
+    .wifi::after {
+      content: "";
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      left: 7px;
+      top: 7px;
+      border-radius: 50%;
+      background: #050505;
+    }
+    .wifi-svg {
+      width: 31px;
+      height: 24px;
+      display: block;
+      overflow: visible;
+    }
+    .battery {
+      width: 49px;
+      height: 25px;
+      border: 2.5px solid #050505;
+      border-radius: 7px;
+      position: relative;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: #050505;
+      font-size: 15px;
+      font-weight: 760;
+      line-height: 1;
+      letter-spacing: -.5px;
+    }
+    .battery::before { content: none; }
+    .battery::after { content: ""; position: absolute; right: -6px; top: 7px; width: 4px; height: 8px; border-radius: 0 3px 3px 0; background: #050505; }
+
+    .navigation {
+      position: absolute;
+      inset: 92px 0 auto;
+      height: 131px;
+      z-index: 15;
+      pointer-events: none;
+      border-bottom: 1px solid rgba(60,60,67,.12);
+      background: rgba(249,249,250,.88);
+      backdrop-filter: blur(28px) saturate(150%);
+    }
+    .glass-button {
+      position: absolute;
+      width: 58px;
+      height: 58px;
+      top: 22px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #007aff;
+      background:
+        linear-gradient(155deg, rgba(255,255,255,.94), rgba(241,243,247,.72));
+      border: 1px solid rgba(255,255,255,.96);
+      box-shadow:
+        0 5px 18px rgba(24,34,52,.10),
+        inset 0 1px 1px rgba(255,255,255,.96);
+      backdrop-filter: blur(22px) saturate(170%);
+    }
+    .back { left: 24px; }
+    .back svg { width: 27px; height: 27px; }
+    .video { right: 24px; }
+    .video svg { width: 30px; height: 30px; }
+    .unread {
+      position: absolute;
+      z-index: 2;
+      left: 78px;
+      top: 31px;
+      min-width: 72px;
+      padding: 7px 14px 8px;
+      border-radius: 24px;
+      color: #fff;
+      background: #0a84ff;
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 1;
+      text-align: center;
+    }
+    .contact {
+      position: absolute;
+      left: 50%;
+      top: 4px;
+      width: 230px;
+      transform: translateX(-50%);
+      text-align: center;
+    }
+    .avatar {
+      width: 74px;
+      height: 74px;
+      margin: 0 auto 4px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      overflow: hidden;
+      color: #fff;
+      background: #dfe5ec;
+      font-size: 38px;
+      font-weight: 500;
+      border: 1px solid rgba(60,60,67,.10);
+      box-shadow:
+        0 2px 8px rgba(0,0,0,.08),
+        inset 0 0 0 .5px rgba(255,255,255,.7);
+      background-position: center;
+      background-size: cover;
+    }
+    .contact-name { font-size: 22px; font-weight: 550; line-height: 1.08; color: #111; }
+    .contact-name span { color: #8e8e93; padding-left: 2px; }
+    .contact-name #contact-name { color: #111; padding-left: 0; }
+
+    #conversation {
+      position: absolute;
+      z-index: 2;
+      inset: 242px 0 122px;
+      overflow: hidden;
+      padding: 17px 24px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 9px;
+    }
+    .day-label {
+      color: #8e8e93;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 500;
+      margin: 0 auto 12px;
+    }
+    .message-row {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      transform-origin: 0 100%;
+      animation: bubble-pop .22s cubic-bezier(.18,1.28,.44,1) both;
+    }
+    .message-row.sent {
+      align-items: flex-end;
+      transform-origin: 100% 100%;
+      position: relative;
+      right: -4px;
+    }
+    .message-row.received,
+    .message-row.typing {
+      position: relative;
+      left: 3px;
+    }
+    .message-row.grouped { margin-top: 0; }
+    .message-row.sent + .message-row.received,
+    .message-row.sent + .message-row.typing { margin-top: 26px; }
+    .message-row.sent:has(.receipt[hidden]) + .message-row.received { margin-top: -3px; }
+    .message-row.received + .message-row.sent { margin-top: -7px; }
+    .bubble {
+      position: relative;
+      z-index: 1;
+      max-width: 500px;
+      padding: 13px 28px;
+      border-radius: 31px;
+      color: var(--label);
+      background: transparent;
+      font-size: 34px;
+      line-height: 1.2;
+      letter-spacing: -.62px;
+      overflow-wrap: anywhere;
+      isolation: isolate;
+    }
+    .bubble-shape {
+      position: absolute;
+      z-index: -1;
+      top: 0;
+      overflow: visible;
+      pointer-events: none;
+    }
+    .sent .bubble {
+      color: #fff;
+      padding-left: 27px;
+      padding-right: 37px;
+    }
+    .received .bubble,
+    .typing .bubble {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      background: transparent;
+      overflow: visible;
+    }
+    .received .bubble {
+      padding-left: 23px;
+      padding-right: 29px;
+    }
+    .receipt {
+      position: relative;
+      top: 7px;
+      margin: 5px 8px 0;
+      color: #8e8e93;
+      font-size: 17px;
+      line-height: 1;
+    }
+    .message-row.media {
+      animation: media-pop .28s cubic-bezier(.18,1.18,.38,1) both;
+    }
+    .media-bubble {
+      position: relative;
+      line-height: 0;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,.08));
+    }
+    .media-bubble svg {
+      display: block;
+      overflow: visible;
+    }
+    .media-bubble image {
+      image-rendering: auto;
+    }
+    .media-placeholder {
+      width: 420px;
+      height: 310px;
+      display: grid;
+      place-items: center;
+      border-radius: 27px;
+      color: #fff;
+      background: linear-gradient(145deg,#78a7dd,#355376);
+      font-size: 26px;
+      line-height: 1;
+    }
+    .typing .bubble {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      height: 65px;
+      min-width: 116px;
+      padding: 0 23px;
+    }
+    .typing-dot {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #8e8e93;
+      animation: typing-dot 1.15s infinite ease-in-out;
+    }
+    .typing-dot:nth-child(2) { animation-delay: .14s; }
+    .typing-dot:nth-child(3) { animation-delay: .28s; }
+
+    #compose-dock {
+      position: absolute;
+      z-index: 12;
+      left: 20px;
+      right: 17px;
+      bottom: 48px;
+      height: 75px;
+      display: grid;
+      grid-template-columns: 63px minmax(0,1fr);
+      gap: 18px;
+      align-items: center;
+    }
+    .add-button, .composer {
+      background: rgba(255,255,255,.96);
+      border: 1.5px solid #d1d1d6;
+      box-shadow: none;
+    }
+    .add-button {
+      width: 63px;
+      height: 63px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #202124;
+      font-size: 45px;
+      font-weight: 300;
+      line-height: 1;
+      border: 0;
+      background: #f1f1f3;
+      transform: rotate(0);
+      will-change: transform, background;
+    }
+    .composer {
+      min-height: 69px;
+      border-radius: 35px;
+      padding: 0 68px 0 24px;
+      display: flex;
+      align-items: center;
+      color: #111;
+      font-size: 31px;
+      line-height: 1.2;
+      position: relative;
+    }
+    .placeholder { color: #8e8e93; }
+    #cursor {
+      width: 3px;
+      height: 37px;
+      margin-left: 2px;
+      background: #0a84ff;
+      animation: cursor-blink .9s step-end infinite;
+    }
+    .composer-action {
+      position: absolute;
+      right: 10px;
+      width: 49px;
+      height: 49px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #7d7f84;
+    }
+    .composer-action svg { width: 28px; height: 28px; }
+    .composer-action.send { color: #fff; background: #0a84ff; }
+
+    #keyboard {
+      position: absolute;
+      z-index: 11;
+      left: 0;
+      right: 0;
+      bottom: -461px;
+      height: 461px;
+      padding: 0 3px;
+      color: #090909;
+      background: rgba(211,214,219,.97);
+      border-top: 1px solid rgba(255,255,255,.55);
+      border-radius: 0;
+      box-shadow: 0 -8px 28px rgba(28,36,52,.08);
+      backdrop-filter: blur(30px) saturate(150%);
+    }
+    .predictions {
+      height: 75px;
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      align-items: center;
+      font-size: 27px;
+      text-align: center;
+    }
+    .prediction { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .prediction + .prediction { border-left: 1px solid rgba(100,103,108,.16); }
+    .key-row {
+      display: grid;
+      gap: 7px;
+      margin-bottom: 9px;
+      justify-content: center;
+    }
+    .row-10 { grid-template-columns: repeat(10, 1fr); }
+    .row-9 { grid-template-columns: repeat(9, 1fr); padding-inline: 32px; }
+    .row-7 { grid-template-columns: 67px repeat(7,1fr) 67px; }
+    .key {
+      position: relative;
+      height: 66px;
+      min-width: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--key);
+      box-shadow:
+        0 2px 0 rgba(80,84,91,.28),
+        0 1px 2px rgba(70,74,80,.13);
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 1;
+    }
+    .key.pressed {
+      background: #c4c6c9;
+      box-shadow:
+        inset 0 1px 1px rgba(77,82,90,.10),
+        0 1px 0 rgba(80,84,91,.18);
+    }
+    .key.system { background: #abb0b8; font-size: 28px; }
+    .bottom-row {
+      display: grid;
+      grid-template-columns: 160px 1fr 160px;
+      gap: 8px;
+    }
+    .bottom-row .key { height: 66px; font-size: 25px; }
+    .keyboard-footer {
+      position: absolute;
+      left: 63px;
+      right: 63px;
+      bottom: 15px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .keyboard-emoji {
+      width: 42px;
+      height: 42px;
+    }
+    .dictation {
+      width: 39px;
+      height: 44px;
+    }
+    .home-indicator {
+      position: absolute;
+      z-index: 30;
+      width: 250px;
+      height: 12px;
+      left: 50%;
+      bottom: 14px;
+      transform: translateX(-50%);
+      border-radius: 99px;
+      background: #080808;
+    }
+    #media-scrim {
+      position: absolute;
+      z-index: 24;
+      inset: 223px 0 0;
+      pointer-events: none;
+      background: rgba(16,20,28,.10);
+      opacity: 0;
+      will-change: opacity;
+    }
+    #attachment-menu {
+      position: absolute;
+      z-index: 26;
+      left: 20px;
+      bottom: 73px;
+      width: 590px;
+      height: 820px;
+      overflow: hidden;
+      padding: 18px 18px;
+      border: 1px solid rgba(255,255,255,.92);
+      border-radius: 44px;
+      background:
+        linear-gradient(145deg,rgba(255,255,255,.91),rgba(243,245,248,.78));
+      box-shadow:
+        0 24px 55px rgba(31,36,45,.22),
+        inset 0 1px 1px rgba(255,255,255,.95);
+      backdrop-filter: blur(34px) saturate(175%);
+      opacity: 0;
+      transform: translateY(20px) scale(.88);
+      transform-origin: 22px 100%;
+      will-change: opacity, transform;
+      pointer-events: none;
+    }
+    .attachment-row {
+      height: 120px;
+      display: grid;
+      grid-template-columns: 76px minmax(0,1fr);
+      align-items: center;
+      gap: 24px;
+      padding: 0 28px;
+      border-radius: 29px;
+      color: #111;
+      font-size: 42px;
+      font-weight: 450;
+      letter-spacing: -.55px;
+    }
+    .attachment-row.selected {
+      background: rgba(0,122,255,.11);
+    }
+    .menu-icon {
+      width: 68px;
+      height: 68px;
+      display: block;
+      object-fit: contain;
+    }
+    .menu-icon.circle {
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    #photo-picker {
+      position: absolute;
+      z-index: 25;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 436px;
+      overflow: hidden;
+      border-radius: 28px 28px 0 0;
+      background: rgba(251,251,253,.98);
+      border-top: 1px solid rgba(60,60,67,.14);
+      box-shadow: 0 -14px 38px rgba(25,31,42,.16);
+      transform: translateY(100%);
+      will-change: transform, opacity;
+      pointer-events: none;
+    }
+    .photo-picker-handle {
+      width: 44px;
+      height: 6px;
+      margin: 10px auto 8px;
+      border-radius: 99px;
+      background: #c7c7cc;
+    }
+    .photo-picker-header {
+      height: 48px;
+      padding: 0 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #111;
+      font-size: 21px;
+      font-weight: 650;
+    }
+    .photo-picker-header span:last-child {
+      color: #007aff;
+      font-size: 19px;
+      font-weight: 560;
+    }
+    #photo-grid {
+      height: 374px;
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      grid-auto-rows: 181px;
+      gap: 4px;
+      padding: 0 4px 4px;
+      overflow: hidden;
+    }
+    .photo-thumb {
+      position: relative;
+      overflow: hidden;
+      background: #d6d8dc;
+      background-position: center;
+      background-size: cover;
+      transform: scale(1);
+      will-change: transform, filter;
+    }
+    .photo-thumb:first-child { border-radius: 14px 0 0 0; }
+    .photo-thumb:nth-child(3) { border-radius: 0 14px 0 0; }
+    .photo-thumb.selected {
+      transform: scale(.94);
+      filter: brightness(.9);
+      box-shadow: inset 0 0 0 5px #fff, inset 0 0 0 9px #0a84ff;
+    }
+    .photo-check {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 31px;
+      height: 31px;
+      display: grid;
+      place-items: center;
+      border: 2px solid rgba(255,255,255,.94);
+      border-radius: 50%;
+      color: transparent;
+      background: rgba(0,0,0,.22);
+      font-size: 20px;
+      font-weight: 750;
+      line-height: 1;
+      box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    }
+    .photo-thumb.selected .photo-check {
+      color: #fff;
+      background: #0a84ff;
+    }
+    #camera-flow {
+      position: absolute;
+      z-index: 60;
+      inset: 0;
+      overflow: hidden;
+      color: #fff;
+      background: #000;
+      opacity: 0;
+      transform: translateY(28px) scale(.985);
+      transform-origin: 50% 100%;
+      will-change: opacity, transform;
+      pointer-events: none;
+    }
+    .camera-status {
+      display: none;
+    }
+    .camera-status .status-time {
+      left: 42px;
+      top: 35px;
+      font-size: 26px;
+    }
+    .camera-status .island {
+      top: 13px;
+      width: 205px;
+      height: 55px;
+      border: 1px solid rgba(255,255,255,.13);
+    }
+    .camera-status .island::before {
+      content: "";
+      position: absolute;
+      left: 18px;
+      top: 20px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #ff453a;
+      box-shadow: 0 0 8px rgba(255,69,58,.55);
+    }
+    .camera-status .status-icons {
+      right: 31px;
+      top: 37px;
+      gap: 8px;
+      transform: scale(.84);
+      transform-origin: 100% 50%;
+    }
+    .camera-status .cell-bars i,
+    .camera-status .wifi::after,
+    .camera-status .battery,
+    .camera-status .battery::after { background: #fff; }
+    .camera-status .wifi { border-top-color: #fff; }
+    .camera-status .battery { border-color: #fff; color: #000; }
+    .camera-shell {
+      position: absolute;
+      inset: 0;
+      background: #000;
+    }
+    .camera-exposure {
+      position: absolute;
+      z-index: 9;
+      left: 92px;
+      top: 30px;
+      color: rgba(255,255,255,.92);
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: .2px;
+    }
+    .camera-privacy-dot {
+      position: absolute;
+      z-index: 9;
+      left: 395px;
+      top: 49px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #30d158;
+      box-shadow: 0 0 7px rgba(48,209,88,.4);
+    }
+    .camera-capture,
+    .camera-review {
+      position: absolute;
+      inset: 0;
+    }
+    .camera-review {
+      opacity: 0;
+      visibility: hidden;
+    }
+    #camera-flow.review .camera-capture {
+      opacity: 0;
+      visibility: hidden;
+    }
+    #camera-flow.review .camera-review {
+      opacity: 1;
+      visibility: visible;
+    }
+    .camera-viewfinder {
+      position: absolute;
+      inset: 174px 0 311px;
+      overflow: hidden;
+      background: #171717;
+    }
+    .camera-viewfinder-image,
+    .camera-review-image {
+      position: absolute;
+      inset: -2%;
+      background-position: center;
+      background-size: cover;
+      transform: scale(1.04);
+    }
+    .camera-grid {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg,transparent 33.15%,rgba(255,255,255,.32) 33.25% 33.45%,transparent 33.55% 66.4%,rgba(255,255,255,.32) 66.5% 66.7%,transparent 66.8%),
+        linear-gradient(180deg,transparent 33.15%,rgba(255,255,255,.32) 33.25% 33.45%,transparent 33.55% 66.4%,rgba(255,255,255,.32) 66.5% 66.7%,transparent 66.8%);
+      opacity: .7;
+    }
+    .camera-top-controls {
+      position: absolute;
+      z-index: 4;
+      inset: 129px 28px auto 30px;
+      height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .camera-circle-button,
+    .camera-flip,
+    .edit-circle {
+      width: 66px;
+      height: 66px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(38,38,40,.78);
+      backdrop-filter: blur(16px);
+    }
+    .camera-circle-button { font-size: 37px; font-weight: 260; }
+    .camera-format {
+      display: none;
+      position: absolute;
+      left: 78px;
+      height: 48px;
+      align-items: center;
+      padding: 0 14px;
+      border-radius: 19px;
+      color: rgba(255,255,255,.94);
+      background: rgba(52,52,54,.75);
+      font-size: 15px;
+      font-weight: 650;
+      letter-spacing: .3px;
+      backdrop-filter: blur(16px);
+    }
+    .camera-tools {
+      width: 132px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      overflow: hidden;
+      border-radius: 32px;
+      background: rgba(52,52,54,.75);
+      backdrop-filter: blur(16px);
+    }
+    .camera-tool {
+      width: 62px;
+      height: 64px;
+      display: grid;
+      place-items: center;
+      border-radius: 0;
+      background: transparent;
+      font-size: 24px;
+    }
+    .camera-zoom {
+      position: absolute;
+      left: 50%;
+      bottom: 444px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,.85);
+      font-size: 17px;
+    }
+    .camera-zoom strong {
+      width: 55px;
+      height: 55px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #ffd60a;
+      background: rgba(54,54,56,.78);
+      font-weight: 600;
+    }
+    .camera-shutter {
+      position: absolute;
+      left: 50%;
+      bottom: 201px;
+      width: 148px;
+      height: 148px;
+      border: 7px solid #fff;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      background: transparent;
+    }
+    .camera-shutter::after {
+      content: "";
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      left: 7px;
+      top: 7px;
+      border-radius: 50%;
+      background: #fff;
+    }
+    .camera-modes {
+      position: absolute;
+      left: 50%;
+      bottom: 65px;
+      width: 385px;
+      height: 86px;
+      display: grid;
+      grid-template-columns: repeat(2,1fr);
+      align-items: center;
+      transform: translateX(-50%);
+      overflow: hidden;
+      border-radius: 43px;
+      background: rgba(30,30,32,.86);
+      font-size: 18px;
+      letter-spacing: .5px;
+      text-align: center;
+      isolation: isolate;
+    }
+    .camera-modes::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      right: 5px;
+      top: 5px;
+      width: 187px;
+      height: 76px;
+      border: 2px solid rgba(255,255,255,.18);
+      border-radius: 38px;
+      background: rgba(74,74,78,.62);
+    }
+    .camera-modes span:first-child { color: rgba(255,255,255,.72); }
+    .camera-modes span:last-child { color: #ffd60a; }
+    .camera-flip {
+      position: absolute;
+      right: 61px;
+      bottom: 72px;
+      width: 90px;
+      height: 90px;
+      font-size: 38px;
+    }
+    #camera-flash {
+      position: absolute;
+      z-index: 10;
+      inset: 0;
+      background: #fff;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .review-top {
+      position: absolute;
+      z-index: 4;
+      inset: 0 0 auto;
+      height: 138px;
+      padding: 0 35px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
+      background: #000;
+      font-size: 22px;
+      font-weight: 500;
+    }
+    .review-top span:last-child {
+      color: #ffd60a;
+      font-weight: 650;
+    }
+    .camera-review-image {
+      inset: 135px 0 162px;
+      transform: none;
+    }
+    .review-bottom {
+      position: absolute;
+      inset: auto 0 0;
+      height: 162px;
+      background: #000;
+    }
+    .edit-control {
+      position: absolute;
+      left: 28px;
+      top: 28px;
+      color: rgba(255,255,255,.72);
+      font-size: 15px;
+      text-align: center;
+    }
+    .edit-circle {
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 5px;
+      font-size: 27px;
+    }
+    .camera-send {
+      position: absolute;
+      right: 30px;
+      top: 30px;
+      width: 78px;
+      height: 78px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: #0a84ff;
+      box-shadow: 0 2px 9px rgba(10,132,255,.34);
+    }
+    .camera-send svg { width: 41px; height: 41px; }
+    @keyframes bubble-pop {
+      0% { transform: scale(.72) translateY(8px); opacity: .2; }
+      72% { transform: scale(1.025); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes media-pop {
+      0% { transform: scale(.82) translate(12px,18px); opacity: .1; }
+      70% { transform: scale(1.018); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes typing-dot {
+      0%, 55%, 100% { transform: translateY(0); opacity: .45; }
+      26% { transform: translateY(-5px); opacity: 1; }
+    }
+    @keyframes cursor-blink { 0%, 48% { opacity: 1; } 49%, 100% { opacity: 0; } }
+  </style>
+</head>
+<body>
+  <div id="camera">
+    <div class="status">
+      <div id="status-time" class="status-time">9:41</div>
+      <svg id="silent-icon" class="silent-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M13.7 19a2 2 0 0 1-3.4 0M18 8a6 6 0 0 0-9.6-4.8M6.4 6.3A6.8 6.8 0 0 0 6 8c0 7-3 7-3 9h14M3 3l18 18"/></svg>
+      <div id="dynamic-island" class="island"></div>
+      <div class="status-icons">
+        <span class="cell-bars"><i></i><i></i><i></i><i></i></span>
+        <svg class="wifi-svg" viewBox="0 0 31 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><path d="M2 7.5c7.6-6.1 19.4-6.1 27 0"/><path d="M7 13c4.8-3.8 12.2-3.8 17 0"/><path d="M12.2 18.4c1.9-1.5 4.7-1.5 6.6 0"/><circle cx="15.5" cy="22" r="1.7" fill="currentColor" stroke="none"/></svg>
+        <span class="battery"><span id="battery-level">84</span></span>
+      </div>
+    </div>
+
+    <div class="navigation">
+      <div class="glass-button back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"><path d="m15 19-7-7 7-7"/></svg>
+      </div>
+        <div id="unread" class="unread" hidden></div>
+      <div class="contact">
+        <div id="avatar" class="avatar">f</div>
+        <div class="contact-name"><span id="contact-name">folk</span> <span>›</span></div>
+      </div>
+      <div class="glass-button video">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="4"/><path d="m16 10 5-3v10l-5-3z"/></svg>
+      </div>
+    </div>
+
+    <div id="conversation"><div id="conversation-time" class="day-label">Today 9:41 AM</div></div>
+
+    <div id="media-scrim"></div>
+
+    <div id="attachment-menu" aria-hidden="true">
+      <div class="attachment-row" data-source="camera">
+        <img class="menu-icon circle" src="./assets/menu-icons/camera.png" alt="">
+        <span>Camera</span>
+      </div>
+      <div class="attachment-row" data-source="photos">
+        <img class="menu-icon freeform" src="./assets/menu-icons/photos.png" alt="">
+        <span>Photos</span>
+      </div>
+      <div class="attachment-row">
+        <img class="menu-icon freeform" src="./assets/menu-icons/stickers.png" alt="">
+        <span>Stickers</span>
+      </div>
+      <div class="attachment-row">
+        <img class="menu-icon freeform" src="./assets/menu-icons/polls.png" alt="">
+        <span>Polls</span>
+      </div>
+      <div class="attachment-row">
+        <img class="menu-icon freeform" src="./assets/menu-icons/audio.png" alt="">
+        <span>Audio</span>
+      </div>
+      <div class="attachment-row">
+        <img class="menu-icon freeform" src="./assets/menu-icons/send-later.png" alt="">
+        <span>Send Later</span>
+      </div>
+      <div class="attachment-row">
+        <img class="menu-icon circle" src="./assets/menu-icons/store.png" alt="">
+        <span>Store</span>
+      </div>
+    </div>
+
+    <div id="photo-picker" aria-hidden="true">
+      <div class="photo-picker-handle"></div>
+      <div class="photo-picker-header"><span>Photos</span><span>All Photos</span></div>
+      <div id="photo-grid"></div>
+    </div>
+
+    <div id="compose-dock">
+      <div id="add-button" class="add-button">+</div>
+      <div class="composer">
+        <span id="composer-copy" class="placeholder">iMessage</span><span id="cursor" hidden></span>
+        <span id="composer-action" class="composer-action">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M12 3a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M5 10v1a7 7 0 0 0 14 0v-1M12 18v3M8 21h8"/></svg>
+        </span>
+      </div>
+    </div>
+
+    <div id="keyboard">
+      <div class="predictions"><span class="prediction">I</span><span class="prediction">The</span><span class="prediction">I'm</span></div>
+      <div class="key-row row-10"></div>
+      <div class="key-row row-9"></div>
+      <div class="key-row row-7"></div>
+      <div class="bottom-row"><div class="key system">123</div><div class="key">space</div><div class="key system">return</div></div>
+      <div class="keyboard-footer">
+        <svg class="keyboard-emoji" viewBox="0 0 42 42" fill="none" stroke="#111" stroke-width="2.7" stroke-linecap="round">
+          <circle cx="21" cy="21" r="14.5"/>
+          <circle cx="16.2" cy="17.2" r="1.35" fill="#111" stroke="none"/>
+          <circle cx="25.8" cy="17.2" r="1.35" fill="#111" stroke="none"/>
+          <path d="M14.8 23.2c1.2 4 3.5 5.8 6.2 5.8s5-1.8 6.2-5.8"/>
+        </svg>
+        <svg class="dictation" viewBox="0 0 24 28" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round"><rect x="8" y="1" width="8" height="17" rx="4"/><path d="M4 13v1a8 8 0 0 0 16 0v-1M12 22v5M8 27h8"/></svg>
+      </div>
+    </div>
+    <div class="home-indicator"></div>
+
+    <div id="camera-flow" aria-hidden="true">
+      <div class="camera-status">
+        <div class="status-time" data-camera-time>9:41</div>
+        <div class="island"></div>
+        <div class="status-icons">
+          <span class="cell-bars"><i></i><i></i><i></i><i></i></span>
+          <svg class="wifi-svg" viewBox="0 0 31 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"><path d="M2 7.5c7.6-6.1 19.4-6.1 27 0"/><path d="M7 13c4.8-3.8 12.2-3.8 17 0"/><path d="M12.2 18.4c1.9-1.5 4.7-1.5 6.6 0"/><circle cx="15.5" cy="22" r="1.7" fill="currentColor" stroke="none"/></svg>
+          <span class="battery"><span data-camera-battery>84</span></span>
+        </div>
+      </div>
+      <div class="camera-exposure">EV 0.0</div>
+      <div class="camera-privacy-dot"></div>
+      <div class="camera-shell">
+        <div class="camera-capture">
+          <div class="camera-viewfinder">
+            <div class="camera-viewfinder-image"></div>
+            <div class="camera-grid"></div>
+          </div>
+          <div class="camera-top-controls">
+            <span class="camera-circle-button">×</span>
+            <span class="camera-format">HEIF MAX</span>
+            <span class="camera-tools">
+              <span class="camera-tool">ϟ</span>
+              <span class="camera-tool">•••</span>
+            </span>
+          </div>
+          <div class="camera-zoom"><span>.5</span><strong>1×</strong><span>2</span><span>3</span></div>
+          <div class="camera-shutter"></div>
+          <div class="camera-modes"><span>VIDEO</span><span>PHOTO</span></div>
+          <div class="camera-flip">↻</div>
+        </div>
+        <div class="camera-review">
+          <div class="review-top"><span>Retake</span><span>Done</span></div>
+          <div class="camera-review-image"></div>
+          <div class="review-bottom">
+            <div class="edit-control"><span class="edit-circle">☷</span><span>Edit</span></div>
+            <span class="camera-send">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 18V6M6.5 11.5 12 6l5.5 5.5"/></svg>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div id="camera-flash"></div>
+    </div>
+  </div>
+
+  <script>
+    const defaultStory = {
+      contactName: "folk",
+      avatarText: "",
+      avatarImage: "./assets/folk-icon.png",
+      statusTime: "9:41",
+      batteryLevel: 84,
+      statusTimeAfter: "",
+      statusTimeChangeAt: null,
+      conversationTime: "Today 9:41 AM",
+      readTime: "9:41 AM",
+      cameraZoom: false,
+      deliveredDuration: .62,
+      keyboardLinger: .5,
+      keyboardTransition: .25,
+      messageHold: .25,
+      sounds: {
+        enabled: true,
+        sentVolume: .7,
+        receivedVolume: .65
+      },
+      messages: [
+        { side: "sent", text: "folk can i order sushi" },
+        { side: "received", text: "you already did" },
+        { side: "received", text: "three times this week" },
+        { side: "sent", text: "delete this chat" }
+      ],
+      start: .65,
+      gap: 1,
+      receivedTyping: .88,
+      charactersPerSecond: 12.3
+    };
+    const story = window.__CHAT_STORY__ ?? defaultStory;
+    const StoryImageSources = [
+      story.avatarImage,
+      ...(story.photoLibrary ?? []).map(Item =>
+        typeof Item === "string" ? Item : Item.image
+      ),
+      ...story.messages.map(Message => Message.image ?? Message.thumbnail),
+    ].filter(Boolean);
+    window.__assetsReady = Promise.all(StoryImageSources.map(Source =>
+      new Promise(Resolve => {
+        const ImageAsset = new Image();
+        ImageAsset.onload = Resolve;
+        ImageAsset.onerror = Resolve;
+        ImageAsset.src = Source;
+      })
+    ));
+    document.querySelector("#status-time").textContent = story.statusTime;
+    document.querySelector("#conversation-time").textContent = story.conversationTime;
+    document.querySelector("#contact-name").textContent = story.contactName;
+    document.querySelector("#battery-level").textContent = story.batteryLevel ?? 84;
+    document.querySelector("#dynamic-island").hidden = story.dynamicIsland === false;
+    document.querySelector("#silent-icon").hidden = story.silentMode !== true;
+    document.querySelector("[data-camera-time]").textContent = story.statusTime;
+    document.querySelector("[data-camera-battery]").textContent = story.batteryLevel ?? 84;
+    const unread = document.querySelector("#unread");
+    unread.textContent = story.unreadCount ?? "";
+    unread.hidden = !story.unreadCount;
+    const avatar = document.querySelector("#avatar");
+    avatar.textContent = story.avatarText;
+    if (story.avatarImage) avatar.style.backgroundImage = `url("${story.avatarImage}")`;
+
+    const rows = [
+      ["q","w","e","r","t","y","u","i","o","p"],
+      ["a","s","d","f","g","h","j","k","l"],
+      ["⇧","z","x","c","v","b","n","m","⌫"]
+    ];
+    document.querySelectorAll(".key-row").forEach((row, rowIndex) => {
+      row.innerHTML = rows[rowIndex].map((key, keyIndex) => {
+        const system = rowIndex === 2 && (keyIndex === 0 || keyIndex === rows[rowIndex].length - 1);
+        const letter = /^[a-z]$/i.test(key);
+        return `<span class="key${system ? " system" : ""}${letter ? " letter" : ""}" data-key="${key.toLowerCase()}" data-display="${key}">${key}</span>`;
+      }).join("");
+    });
+    const spaceKey = document.querySelector(".bottom-row .key:nth-child(2)");
+    spaceKey.dataset.key = " ";
+    const allKeys = [...document.querySelectorAll(".key")];
+    const letterKeys = [...document.querySelectorAll(".key-row .key")].filter(
+      key => /^[a-z]$/i.test(key.textContent)
+    );
+    const updateKeyboardCase = (uppercase) => {
+      letterKeys.forEach(key => {
+        const DisplayValue = uppercase
+          ? key.dataset.key.toUpperCase()
+          : key.dataset.key.toLowerCase();
+        key.textContent = DisplayValue;
+        key.dataset.display = DisplayValue;
+      });
+    };
+    const updatePressedKey = (character, isPressed) => {
+      allKeys.forEach(key => key.classList.remove("pressed"));
+      if (!isPressed || !character) return;
+      const NormalizedCharacter = character === " " ? " " : character.toLowerCase();
+      const MatchingKey = allKeys.find(key => key.dataset.key === NormalizedCharacter);
+      MatchingKey?.classList.add("pressed");
+    };
+
+    const clamp01 = (Value) => Math.max(0, Math.min(1, Value));
+    const easeOutCubic = (Progress) => 1 - Math.pow(1 - clamp01(Progress), 3);
+    const MediaTiming = {
+      menuOpen: story.mediaTiming?.menuOpen ?? .28,
+      menuHold: story.mediaTiming?.menuHold ?? .58,
+      photosDelay: story.mediaTiming?.photosDelay ?? .24,
+      photosOpen: story.mediaTiming?.photosOpen ?? .38,
+      photosBrowse: story.mediaTiming?.photosBrowse ?? 1.15,
+      photosSelect: story.mediaTiming?.photosSelect ?? .38,
+      cameraOpen: story.mediaTiming?.cameraOpen ?? .62,
+      cameraSettle: story.mediaTiming?.cameraSettle ?? 1.15,
+      cameraFlash: story.mediaTiming?.cameraFlash ?? .16,
+      cameraReview: story.mediaTiming?.cameraReview ?? 1.35,
+      cameraSend: story.mediaTiming?.cameraSend ?? .3,
+    };
+    const schedule = [];
+    let cursor = story.start;
+    story.messages.forEach((message, index) => {
+      const DeclaredKind = message.kind ?? message.type;
+      const kind = ["image", "photo"].includes(DeclaredKind) ? "image" : "text";
+      let duration;
+      let mediaPhases = null;
+      if (kind === "image") {
+        const sendVia = message.sendVia === "camera" ? "camera" : "photos";
+        const MenuEnd = cursor + MediaTiming.menuOpen + MediaTiming.menuHold;
+        if (sendVia === "camera") {
+          const CameraReady = MenuEnd + MediaTiming.cameraOpen;
+          const CaptureStart = CameraReady + MediaTiming.cameraSettle;
+          const ReviewStart = CaptureStart + MediaTiming.cameraFlash;
+          const SendStart = ReviewStart + MediaTiming.cameraReview;
+          const Reveal = SendStart + MediaTiming.cameraSend;
+          mediaPhases = {
+            menuEnd: MenuEnd,
+            sourceStart: MenuEnd,
+            sourceReady: CameraReady,
+            captureStart: CaptureStart,
+            reviewStart: ReviewStart,
+            sendStart: SendStart,
+          };
+          duration = Reveal - cursor;
+        } else {
+          const SourceStart = MenuEnd + MediaTiming.photosDelay;
+          const PickerReady = SourceStart + MediaTiming.photosOpen;
+          const SelectStart = PickerReady + MediaTiming.photosBrowse;
+          const Reveal = SelectStart + MediaTiming.photosSelect;
+          mediaPhases = {
+            menuEnd: MenuEnd,
+            sourceStart: SourceStart,
+            sourceReady: PickerReady,
+            selectStart: SelectStart,
+            sendStart: SelectStart,
+          };
+          duration = Reveal - cursor;
+        }
+      } else {
+        const DefaultDuration = message.side === "sent"
+          ? Math.min(2.5, Math.max(.75, message.text.length / story.charactersPerSecond))
+          : story.receivedTyping;
+        duration = Number.isFinite(message.typingDuration)
+          ? message.typingDuration
+          : DefaultDuration;
+      }
+      const reveal = cursor + duration;
+      const holdDuration = Number.isFinite(message.holdDuration)
+        ? message.holdDuration
+        : (story.messageHold ?? .25);
+      schedule.push({
+        ...message,
+        kind,
+        sendVia: kind === "image" && message.sendVia === "camera" ? "camera" : "photos",
+        index,
+        phaseStart: cursor,
+        duration,
+        mediaPhases,
+        reveal,
+        soundStart: reveal,
+        holdDuration
+      });
+      const GapAfter = Number.isFinite(message.gapAfter) ? message.gapAfter : story.gap;
+      cursor = reveal + holdDuration + GapAfter;
+    });
+    window.__renderDuration = cursor + .75;
+    window.__soundSchedule = schedule.map(({ index, soundStart }) => ({ index, soundStart }));
+
+    const escapeHtml = (value) => String(value).replace(/[&<>"']/g, char => ({
+      "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
+    })[char]);
+    const conversation = document.querySelector("#conversation");
+    const composerCopy = document.querySelector("#composer-copy");
+    const composerCursor = document.querySelector("#cursor");
+    const composerAction = document.querySelector("#composer-action");
+    const predictions = [...document.querySelectorAll(".prediction")];
+    const camera = document.querySelector("#camera");
+    const composeDock = document.querySelector("#compose-dock");
+    const keyboard = document.querySelector("#keyboard");
+    const addButton = document.querySelector("#add-button");
+    const mediaScrim = document.querySelector("#media-scrim");
+    const attachmentMenu = document.querySelector("#attachment-menu");
+    const attachmentRows = [...document.querySelectorAll(".attachment-row")];
+    const photoPicker = document.querySelector("#photo-picker");
+    const photoGrid = document.querySelector("#photo-grid");
+    const cameraFlow = document.querySelector("#camera-flow");
+    const cameraFlash = document.querySelector("#camera-flash");
+    const cameraViewfinderImage = document.querySelector(".camera-viewfinder-image");
+    const cameraReviewImage = document.querySelector(".camera-review-image");
+    const LibraryItems = (story.photoLibrary ?? []).map(Item =>
+      typeof Item === "string" ? { image: Item } : Item
+    );
+    const RequiredLibrarySize = Math.max(6, LibraryItems.length);
+    const FallbackLibraryItem = LibraryItems.at(-1) ?? {
+      image: "linear-gradient(145deg,#88b6d5,#415b75)"
+    };
+    while (LibraryItems.length < RequiredLibrarySize) {
+      LibraryItems.push(FallbackLibraryItem);
+    }
+    photoGrid.innerHTML = LibraryItems.map((Item, Index) => (
+      `<div class="photo-thumb" data-photo-index="${Index}" aria-label="${escapeHtml(Item.label ?? `Photo ${Index + 1}`)}"><span class="photo-check">✓</span></div>`
+    )).join("");
+    [...photoGrid.querySelectorAll(".photo-thumb")].forEach((Thumb, Index) => {
+      const ImageValue = LibraryItems[Index]?.image;
+      Thumb.style.backgroundImage = ImageValue?.startsWith("linear-gradient(")
+        ? ImageValue
+        : `url("${ImageValue}")`;
+    });
+    const mounted = new Set();
+    let typingNode = null;
+    const startedAt = performance.now();
+    const forcedTimeParam = new URLSearchParams(location.search).get("t");
+    const forcedTime = forcedTimeParam === null ? null : Number(forcedTimeParam);
+
+    const mountBubbleShape = (bubble, side, hasTail = true) => {
+      bubble.querySelector(".bubble-shape")?.remove();
+      const BubbleWidth = bubble.offsetWidth;
+      const BubbleHeight = bubble.offsetHeight;
+      const CornerRadius = Math.min(26, BubbleHeight / 2);
+      // iMessage uses fixed, non-stretching corner and tail caps. Only the
+      // bubble's center region grows for multiline content.
+      const ReferenceScale = .67;
+      const TailExtension = 14 * ReferenceScale;
+      const TailDrop = 20 * ReferenceScale;
+      const ShoulderRise = 8 * ReferenceScale;
+      const ShoulderPeakInset = 20 * ReferenceScale;
+      const ShoulderStartInset = 44 * ReferenceScale;
+      const ShoulderControlA = 6 * ReferenceScale;
+      const ShoulderControlB = 12 * ReferenceScale;
+      const ShoulderControlC = 30 * ReferenceScale;
+      const ShoulderControlD = 36 * ReferenceScale;
+      const TailWidth = Math.ceil(TailExtension + (3 * ReferenceScale));
+      const SentTailPathData = [
+        `M ${CornerRadius} 0`,
+        `H ${BubbleWidth - CornerRadius}`,
+        `Q ${BubbleWidth} 0 ${BubbleWidth} ${CornerRadius}`,
+        `V ${BubbleHeight - TailDrop}`,
+        `C ${BubbleWidth + (2 * ReferenceScale)} ${BubbleHeight - (19 * ReferenceScale)} ${BubbleWidth + (4 * ReferenceScale)} ${BubbleHeight - (14 * ReferenceScale)} ${BubbleWidth + (6 * ReferenceScale)} ${BubbleHeight - (11 * ReferenceScale)}`,
+        `C ${BubbleWidth + (10 * ReferenceScale)} ${BubbleHeight - (6 * ReferenceScale)} ${BubbleWidth + (12 * ReferenceScale)} ${BubbleHeight - (3 * ReferenceScale)} ${BubbleWidth + TailExtension} ${BubbleHeight}`,
+        `C ${BubbleWidth + (10 * ReferenceScale)} ${BubbleHeight} ${BubbleWidth + (4 * ReferenceScale)} ${BubbleHeight} ${BubbleWidth + (2 * ReferenceScale)} ${BubbleHeight}`,
+        `C ${BubbleWidth - ShoulderControlA} ${BubbleHeight} ${BubbleWidth - ShoulderControlB} ${BubbleHeight - ShoulderRise} ${BubbleWidth - ShoulderPeakInset} ${BubbleHeight - ShoulderRise}`,
+        `C ${BubbleWidth - ShoulderControlC} ${BubbleHeight - ShoulderRise} ${BubbleWidth - ShoulderControlD} ${BubbleHeight} ${BubbleWidth - ShoulderStartInset} ${BubbleHeight}`,
+        `H ${CornerRadius}`,
+        `Q 0 ${BubbleHeight} 0 ${BubbleHeight - CornerRadius}`,
+        `V ${CornerRadius}`,
+        `Q 0 0 ${CornerRadius} 0`,
+        "Z"
+      ].join(" ");
+      const PlainPathData = [
+        `M ${CornerRadius} 0`,
+        `H ${BubbleWidth - CornerRadius}`,
+        `Q ${BubbleWidth} 0 ${BubbleWidth} ${CornerRadius}`,
+        `V ${BubbleHeight - CornerRadius}`,
+        `Q ${BubbleWidth} ${BubbleHeight} ${BubbleWidth - CornerRadius} ${BubbleHeight}`,
+        `H ${CornerRadius}`,
+        `Q 0 ${BubbleHeight} 0 ${BubbleHeight - CornerRadius}`,
+        `V ${CornerRadius}`,
+        `Q 0 0 ${CornerRadius} 0`,
+        "Z"
+      ].join(" ");
+      const ReceivedBodyLeft = TailWidth;
+      const ReceivedTailJoin = ReceivedBodyLeft + (25 * ReferenceScale);
+      const ReceivedShoulderStart = ReceivedBodyLeft + (13 * ReferenceScale);
+      const ReceivedTailRise = 3 * ReferenceScale;
+      const ReceivedTailPathData = [
+        `M ${ReceivedBodyLeft + CornerRadius} 0`,
+        `H ${ReceivedBodyLeft + BubbleWidth - CornerRadius}`,
+        `Q ${ReceivedBodyLeft + BubbleWidth} 0 ${ReceivedBodyLeft + BubbleWidth} ${CornerRadius}`,
+        `V ${BubbleHeight - CornerRadius}`,
+        `Q ${ReceivedBodyLeft + BubbleWidth} ${BubbleHeight} ${ReceivedBodyLeft + BubbleWidth - CornerRadius} ${BubbleHeight}`,
+        `H ${ReceivedTailJoin}`,
+        `C ${ReceivedBodyLeft + (20 * ReferenceScale)} ${BubbleHeight} ${ReceivedBodyLeft + (16 * ReferenceScale)} ${BubbleHeight - ReceivedTailRise} ${ReceivedShoulderStart} ${BubbleHeight - ReceivedTailRise}`,
+        `C ${ReceivedBodyLeft + (9 * ReferenceScale)} ${BubbleHeight - ReceivedTailRise} ${ReceivedBodyLeft + (5 * ReferenceScale)} ${BubbleHeight} 0 ${BubbleHeight}`,
+        `C ${4 * ReferenceScale} ${BubbleHeight - (2 * ReferenceScale)} ${ReceivedBodyLeft - (2 * ReferenceScale)} ${BubbleHeight - (10 * ReferenceScale)} ${ReceivedBodyLeft} ${BubbleHeight - (18 * ReferenceScale)}`,
+        `V ${CornerRadius}`,
+        `Q ${ReceivedBodyLeft} 0 ${ReceivedBodyLeft + CornerRadius} 0`,
+        "Z"
+      ].join(" ");
+      const IsReceived = side === "received";
+      const HasExternalTail = hasTail;
+      const SvgWidth = BubbleWidth + (HasExternalTail ? TailWidth : 0);
+      const Svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      Svg.classList.add("bubble-shape");
+      Svg.setAttribute("width", String(SvgWidth));
+      Svg.setAttribute("height", String(BubbleHeight));
+      Svg.setAttribute("viewBox", `0 0 ${SvgWidth} ${BubbleHeight}`);
+      const Path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      Path.setAttribute(
+        "d",
+        hasTail
+          ? (IsReceived ? ReceivedTailPathData : SentTailPathData)
+          : PlainPathData
+      );
+      Path.setAttribute("fill", IsReceived ? "#e9e9eb" : "#3c85f8");
+      Svg.style.left = IsReceived && hasTail ? `-${TailWidth}px` : "0";
+      Svg.append(Path);
+      bubble.prepend(Svg);
+      bubble.dataset.hasTail = String(hasTail);
+    };
+
+    const updateTailGrouping = () => {
+      const MessageRows = [...conversation.querySelectorAll(".message-row")];
+      MessageRows.forEach(row => row.classList.remove("group-tail"));
+      MessageRows.forEach((row, index) => {
+        const Side = row.classList.contains("sent") ? "sent" : "received";
+        const NextRow = MessageRows[index + 1];
+        const NextSide = NextRow
+          ? (NextRow.classList.contains("sent") ? "sent" : "received")
+          : null;
+        if (Side !== NextSide) row.classList.add("group-tail");
+      });
+      MessageRows.forEach(row => {
+          const Bubble = row.querySelector(".bubble");
+          if (!Bubble) return;
+          const Side = row.classList.contains("sent") ? "sent" : "received";
+          const HasTail = row.classList.contains("group-tail");
+          if (Bubble.dataset.hasTail !== String(HasTail)) {
+            mountBubbleShape(Bubble, Side, HasTail);
+          }
+        });
+    };
+
+    const createMediaBubble = (event) => {
+      const SvgNamespace = "http://www.w3.org/2000/svg";
+      const BubbleWidth = Number.isFinite(event.mediaWidth) ? event.mediaWidth : 430;
+      const BubbleHeight = Number.isFinite(event.mediaHeight) ? event.mediaHeight : 315;
+      const TailWidth = 15;
+      const IsReceived = event.side === "received";
+      const BodyLeft = IsReceived ? TailWidth : 0;
+      const BodyRight = BodyLeft + BubbleWidth;
+      const SvgWidth = BubbleWidth + TailWidth;
+      const Corner = Math.min(28, BubbleHeight / 5);
+      const ClipId = `media-clip-${event.index}`;
+      const TailPath = IsReceived
+        ? [
+            `M ${BodyLeft + Corner} 0`,
+            `H ${BodyRight - Corner}`,
+            `Q ${BodyRight} 0 ${BodyRight} ${Corner}`,
+            `V ${BubbleHeight - Corner}`,
+            `Q ${BodyRight} ${BubbleHeight} ${BodyRight - Corner} ${BubbleHeight}`,
+            `H ${BodyLeft + 34}`,
+            `C ${BodyLeft + 24} ${BubbleHeight} ${BodyLeft + 18} ${BubbleHeight - 3} ${BodyLeft + 14} ${BubbleHeight - 6}`,
+            `C ${BodyLeft + 10} ${BubbleHeight - 3} ${BodyLeft + 6} ${BubbleHeight} 0 ${BubbleHeight}`,
+            `C 6 ${BubbleHeight - 5} ${BodyLeft - 2} ${BubbleHeight - 13} ${BodyLeft} ${BubbleHeight - 23}`,
+            `V ${Corner}`,
+            `Q ${BodyLeft} 0 ${BodyLeft + Corner} 0`,
+            "Z"
+          ].join(" ")
+        : [
+            `M ${Corner} 0`,
+            `H ${BodyRight - Corner}`,
+            `Q ${BodyRight} 0 ${BodyRight} ${Corner}`,
+            `V ${BubbleHeight - 23}`,
+            `C ${BodyRight + 2} ${BubbleHeight - 14} ${BodyRight + 8} ${BubbleHeight - 5} ${SvgWidth} ${BubbleHeight}`,
+            `C ${BodyRight + 8} ${BubbleHeight} ${BodyRight + 4} ${BubbleHeight - 2} ${BodyRight + 1} ${BubbleHeight - 5}`,
+            `C ${BodyRight - 6} ${BubbleHeight} ${BodyRight - 18} ${BubbleHeight} ${BodyRight - 34} ${BubbleHeight}`,
+            `H ${Corner}`,
+            `Q 0 ${BubbleHeight} 0 ${BubbleHeight - Corner}`,
+            `V ${Corner}`,
+            `Q 0 0 ${Corner} 0`,
+            "Z"
+          ].join(" ");
+      const Wrapper = document.createElement("div");
+      Wrapper.className = "media-bubble";
+      const Svg = document.createElementNS(SvgNamespace, "svg");
+      Svg.setAttribute("width", SvgWidth);
+      Svg.setAttribute("height", BubbleHeight);
+      Svg.setAttribute("viewBox", `0 0 ${SvgWidth} ${BubbleHeight}`);
+      const Definitions = document.createElementNS(SvgNamespace, "defs");
+      const Clip = document.createElementNS(SvgNamespace, "clipPath");
+      Clip.setAttribute("id", ClipId);
+      const ClipShape = document.createElementNS(SvgNamespace, "path");
+      ClipShape.setAttribute("d", TailPath);
+      Clip.append(ClipShape);
+      Definitions.append(Clip);
+      const Background = document.createElementNS(SvgNamespace, "rect");
+      Background.setAttribute("width", SvgWidth);
+      Background.setAttribute("height", BubbleHeight);
+      Background.setAttribute("fill", "#d9dde3");
+      Background.setAttribute("clip-path", `url(#${ClipId})`);
+      const Image = document.createElementNS(SvgNamespace, "image");
+      Image.setAttribute("href", event.image ?? event.thumbnail ?? "");
+      Image.setAttribute("x", "0");
+      Image.setAttribute("y", "0");
+      Image.setAttribute("width", SvgWidth);
+      Image.setAttribute("height", BubbleHeight);
+      Image.setAttribute("preserveAspectRatio", event.mediaFit === "contain"
+        ? "xMidYMid meet"
+        : "xMidYMid slice");
+      Image.setAttribute("clip-path", `url(#${ClipId})`);
+      Svg.append(Definitions, Background, Image);
+      Wrapper.append(Svg);
+      return Wrapper;
+    };
+
+    const mountMessage = (event) => {
+      if (mounted.has(event.index)) return;
+      mounted.add(event.index);
+      const row = document.createElement("div");
+      row.className = `message-row ${event.side}${event.kind === "image" ? " media" : ""}`;
+      if (story.messages[event.index - 1]?.side === event.side) row.classList.add("grouped");
+      row.dataset.index = String(event.index);
+      if (event.kind === "image") {
+        row.append(createMediaBubble(event));
+      } else {
+        const MessageHtml = escapeHtml(event.text).replaceAll("\n", "<br>");
+        const BubbleStyle = Number.isFinite(event.bubbleWidth) ? ` style="width:${event.bubbleWidth}px"` : "";
+        row.innerHTML = `<div class="bubble"${BubbleStyle}>${MessageHtml}</div>`;
+      }
+      if (event.side === "sent") {
+        const Receipt = document.createElement("div");
+        Receipt.className = "receipt";
+        Receipt.dataset.receipt = "";
+        Receipt.textContent = "Delivered";
+        row.append(Receipt);
+      }
+      conversation.append(row);
+      const Bubble = row.querySelector(".bubble");
+      if (Bubble) mountBubbleShape(Bubble, event.side);
+    };
+
+    const mountTyping = () => {
+      if (typingNode) return;
+      typingNode = document.createElement("div");
+      typingNode.className = "message-row typing";
+      typingNode.innerHTML = '<div class="bubble"><i class="typing-dot"></i><i class="typing-dot"></i><i class="typing-dot"></i></div>';
+      conversation.append(typingNode);
+      mountBubbleShape(typingNode.querySelector(".bubble"), "received");
+    };
+
+    const removeTyping = () => {
+      typingNode?.remove();
+      typingNode = null;
+    };
+
+    const updatePredictions = (text) => {
+      const word = text.trim().split(/\s+/).at(-1) || "I";
+      predictions[0].textContent = word;
+      predictions[1].textContent = `"${word}"`;
+      predictions[2].textContent = word.length < 3 ? "you" : `${word}s`;
+    };
+
+    const renderMediaUi = (elapsed, activeMedia) => {
+      attachmentRows.forEach(Row => Row.classList.remove("selected"));
+      [...photoGrid.querySelectorAll(".photo-thumb")].forEach(Thumb =>
+        Thumb.classList.remove("selected")
+      );
+      let MenuProgress = 0;
+      let PickerProgress = 0;
+
+      if (activeMedia) {
+        const Phases = activeMedia.mediaPhases;
+        if (elapsed < Phases.menuEnd) {
+          const Opening = easeOutCubic(
+            (elapsed - activeMedia.phaseStart) / MediaTiming.menuOpen
+          );
+          const Closing = easeOutCubic(
+            (elapsed - (Phases.menuEnd - .18)) / .18
+          );
+          MenuProgress = Math.min(Opening, 1 - Closing);
+          if (elapsed >= Phases.menuEnd - .24) {
+            attachmentRows.find(Row =>
+              Row.dataset.source === activeMedia.sendVia
+            )?.classList.add("selected");
+          }
+        }
+
+        if (activeMedia.sendVia === "photos" && elapsed >= Phases.sourceStart) {
+          const Opening = easeOutCubic(
+            (elapsed - Phases.sourceStart) / MediaTiming.photosOpen
+          );
+          const Closing = easeOutCubic(
+            (elapsed - Phases.sendStart) / Math.max(.01, activeMedia.reveal - Phases.sendStart)
+          );
+          PickerProgress = Math.min(Opening, 1 - Closing);
+          const MatchingLibraryIndex = LibraryItems.findIndex(Item =>
+            Item.image === activeMedia.image
+          );
+          const SelectedLibraryIndex = Number.isInteger(activeMedia.libraryIndex)
+            ? activeMedia.libraryIndex
+            : Math.max(0, MatchingLibraryIndex);
+          if (elapsed >= Phases.selectStart) {
+            photoGrid.querySelector(`[data-photo-index="${SelectedLibraryIndex}"]`)
+              ?.classList.add("selected");
+          }
+        }
+
+        if (activeMedia.sendVia === "camera" && elapsed >= Phases.sourceStart) {
+          const Opening = easeOutCubic(
+            (elapsed - Phases.sourceStart) / MediaTiming.cameraOpen
+          );
+          const Closing = easeOutCubic(
+            (elapsed - Phases.sendStart) / Math.max(.01, activeMedia.reveal - Phases.sendStart)
+          );
+          const CameraProgress = Math.min(Opening, 1 - Closing);
+          cameraFlow.style.visibility = CameraProgress > .001 ? "visible" : "hidden";
+          cameraFlow.style.opacity = String(CameraProgress);
+          cameraFlow.style.transform = `translateY(${(1 - CameraProgress) * 32}px) scale(${.985 + (.015 * CameraProgress)})`;
+          const CameraImage = activeMedia.image ?? activeMedia.thumbnail ?? "";
+          const CameraImageCss = CameraImage ? `url("${CameraImage}")` : "none";
+          cameraViewfinderImage.style.backgroundImage = CameraImageCss;
+          cameraReviewImage.style.backgroundImage = CameraImageCss;
+          const LiveFeedProgress = easeOutCubic(
+            (elapsed - (Phases.sourceStart + .22)) / .3
+          );
+          cameraViewfinderImage.style.opacity = String(LiveFeedProgress);
+          const SettleProgress = easeOutCubic(
+            (elapsed - Phases.sourceReady) / Math.max(.01, MediaTiming.cameraSettle)
+          );
+          cameraViewfinderImage.style.transform = `scale(${1.065 - (.025 * SettleProgress)})`;
+          const IsReview = elapsed >= Phases.reviewStart;
+          cameraFlow.classList.toggle("review", IsReview);
+          const FlashProgress = clamp01(
+            (elapsed - Phases.captureStart) / Math.max(.01, MediaTiming.cameraFlash)
+          );
+          cameraFlash.style.opacity = elapsed >= Phases.captureStart && elapsed <= Phases.reviewStart
+            ? String(.12 * Math.sin(Math.PI * FlashProgress))
+            : "0";
+        }
+      }
+
+      attachmentMenu.style.visibility = MenuProgress > .001 ? "visible" : "hidden";
+      attachmentMenu.style.opacity = String(MenuProgress);
+      attachmentMenu.style.transform =
+        `translateY(${(1 - MenuProgress) * 20}px) scale(${.88 + (.12 * MenuProgress)})`;
+      mediaScrim.style.opacity = String(MenuProgress * .72);
+      addButton.style.transform = `rotate(${MenuProgress * 45}deg)`;
+      addButton.style.background = MenuProgress > .01 ? "#e3e5e9" : "#f1f1f3";
+
+      photoPicker.style.visibility = PickerProgress > .001 ? "visible" : "hidden";
+      photoPicker.style.opacity = String(PickerProgress);
+      photoPicker.style.transform = `translateY(${(1 - PickerProgress) * 100}%)`;
+
+      if (!activeMedia || activeMedia.sendVia !== "camera") {
+        cameraFlow.style.visibility = "hidden";
+        cameraFlow.style.opacity = "0";
+        cameraFlow.style.transform = "translateY(28px) scale(.985)";
+        cameraFlow.classList.remove("review");
+        cameraFlash.style.opacity = "0";
+      }
+      return PickerProgress;
+    };
+
+    const render = (now) => {
+      const elapsed = (now - startedAt) / 1000;
+      if (story.statusTimeAfter && Number.isFinite(story.statusTimeChangeAt)) {
+        const CurrentStatusTime =
+          elapsed >= story.statusTimeChangeAt ? story.statusTimeAfter : story.statusTime;
+        document.querySelector("#status-time").textContent = CurrentStatusTime;
+        document.querySelector("[data-camera-time]").textContent = CurrentStatusTime;
+      }
+      const active = schedule.find(event => elapsed >= event.phaseStart && elapsed < event.reveal);
+      schedule.filter(event => elapsed >= event.reveal).forEach(mountMessage);
+
+      const activeText = active?.kind === "text" ? active : null;
+      const activeMedia = active?.kind === "image" ? active : null;
+      const sentTyping = activeText?.side === "sent";
+      const KeyboardTransition = story.keyboardTransition ?? .25;
+      const KeyboardLinger = story.keyboardLinger ?? .5;
+      const easeKeyboard = (progress) => {
+        const ClampedProgress = Math.max(0, Math.min(1, progress));
+        return 1 - Math.pow(1 - ClampedProgress, 3);
+      };
+      const keyboardProgress = schedule
+        .filter(event => event.kind === "text" && event.side === "sent")
+        .reduce((MaximumProgress, event) => {
+          const OpenProgress = easeKeyboard((elapsed - event.phaseStart) / KeyboardTransition);
+          const CloseStart = event.reveal + KeyboardLinger;
+          const CloseProgress = 1 - easeKeyboard((elapsed - CloseStart) / KeyboardTransition);
+          return Math.max(MaximumProgress, Math.min(OpenProgress, CloseProgress));
+        }, 0);
+      const keyboardVisible = keyboardProgress > .001;
+      const pickerProgress = renderMediaUi(elapsed, activeMedia);
+      const SurfaceProgress = Math.max(keyboardProgress, pickerProgress);
+      conversation.style.bottom = `${122 + (442 * SurfaceProgress)}px`;
+      composeDock.style.bottom = `${48 + (425 * SurfaceProgress)}px`;
+      keyboard.style.bottom = `${-461 + (461 * keyboardProgress)}px`;
+      if (activeText?.side === "received") mountTyping();
+      else removeTyping();
+      updateTailGrouping();
+
+      if (sentTyping) {
+        const progress = Math.max(0, Math.min(1, (elapsed - activeText.phaseStart) / activeText.duration));
+        const CharacterPosition = activeText.text.length * progress;
+        const ActiveCharacterIndex = Math.floor(CharacterPosition);
+        const CharacterPhase = CharacterPosition - ActiveCharacterIndex;
+        const TypedCharacterCount = Math.min(
+          activeText.text.length,
+          Math.floor(CharacterPosition + .38)
+        );
+        const typed = activeText.text.slice(0, TypedCharacterCount);
+        composerCopy.textContent = typed;
+        composerCopy.classList.remove("placeholder");
+        composerCursor.hidden = false;
+        composerAction.classList.add("send");
+        composerAction.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 18V6M6.5 11.5 12 6l5.5 5.5"/></svg>';
+        updatePredictions(typed);
+        updateKeyboardCase(typed.length === 0);
+        const ActiveCharacter = activeText.text[ActiveCharacterIndex];
+        updatePressedKey(ActiveCharacter, ActiveCharacterIndex < activeText.text.length && CharacterPhase < .66);
+      } else {
+        composerCopy.textContent = "iMessage";
+        composerCopy.classList.add("placeholder");
+        composerCursor.hidden = true;
+        composerAction.classList.remove("send");
+        composerAction.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M12 3a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M5 10v1a7 7 0 0 0 14 0v-1M12 18v3M8 21h8"/></svg>';
+        predictions[0].textContent = "I";
+        predictions[1].textContent = "The";
+        predictions[2].textContent = "I'm";
+        updateKeyboardCase(true);
+        updatePressedKey("", false);
+      }
+
+      const revealedSentEvents = schedule.filter(event => event.side === "sent" && elapsed >= event.reveal);
+      const latestSentEvent = revealedSentEvents.at(-1);
+      document.querySelectorAll("[data-receipt]").forEach(receipt => {
+        receipt.hidden = receipt.closest(".message-row")?.dataset.index !== String(latestSentEvent?.index);
+      });
+      if (latestSentEvent) {
+        const latestReceipt = conversation.querySelector(`[data-index="${latestSentEvent.index}"] [data-receipt]`);
+        const hasBeenRead = elapsed >= latestSentEvent.reveal + (story.deliveredDuration ?? .1);
+        if (latestReceipt) {
+          latestReceipt.textContent = hasBeenRead ? `Read ${story.readTime}` : "Delivered";
+        }
+      }
+
+      conversation.scrollTop = conversation.scrollHeight;
+      const latestReveal = [...schedule].reverse().find(event => elapsed >= event.reveal);
+      const sinceReveal = latestReveal ? elapsed - latestReveal.reveal : 99;
+      const zoomStrength = story.cameraZoom && !keyboardVisible && sinceReveal >= 0 && sinceReveal < .65
+        ? 1 - sinceReveal / .65
+        : 0;
+      const eased = 1 - Math.pow(1 - zoomStrength, 3);
+      camera.style.transformOrigin = latestReveal?.side === "sent" ? "68% 66%" : "32% 66%";
+      camera.style.transform = `scale(${1 + .02 * eased})`;
+      if (forcedTime === null) requestAnimationFrame(render);
+    };
+    window.__renderAt = (seconds) => render(startedAt + seconds * 1000);
+    if (forcedTime === null) requestAnimationFrame(render);
+    else window.__renderAt(forcedTime);
+  </script>
+</body>
+</html>

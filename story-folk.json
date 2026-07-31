@@ -1,0 +1,54 @@
+{
+  "contactName": "folk",
+  "avatarText": "",
+  "avatarImage": "./assets/folk-icon.png",
+  "statusTime": "9:41",
+  "conversationTime": "Today 9:41 AM",
+  "readTime": "9:41 AM",
+  "cameraZoom": false,
+  "deliveredDuration": 0.62,
+  "keyboardLinger": 0.5,
+  "keyboardTransition": 0.25,
+  "messageHold": 0.25,
+  "sounds": {
+    "enabled": true,
+    "sentVolume": 0.82,
+    "receivedVolume": 0.78
+  },
+  "start": 0.65,
+  "gap": 0.9,
+  "receivedTyping": 0.8,
+  "charactersPerSecond": 12.3,
+  "messages": [
+    {
+      "side": "sent",
+      "text": "folk can i order sushi"
+    },
+    {
+      "side": "received",
+      "text": "you already did"
+    },
+    {
+      "side": "received",
+      "text": "three times this week"
+    },
+    {
+      "side": "sent",
+      "text": "okay but can i afford it"
+    },
+    {
+      "side": "received",
+      "text": "you can afford rice"
+    },
+    {
+      "side": "received",
+      "text": "the fish is between you\nand god",
+      "bubbleWidth": 455
+    },
+    {
+      "side": "sent",
+      "text": "delete this chat",
+      "typingDuration": 1.5
+    }
+  ]
+}

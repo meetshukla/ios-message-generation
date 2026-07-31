@@ -1,0 +1,103 @@
+{
+  "viewport": {
+    "width": 720,
+    "height": 1560
+  },
+  "contactName": "folk",
+  "avatarText": "",
+  "avatarImage": "./assets/folk-icon.png",
+  "statusTime": "9:41",
+  "batteryLevel": 84,
+  "dynamicIsland": false,
+  "silentMode": true,
+  "conversationTime": "Today 9:41 AM",
+  "readTime": "9:41 AM",
+  "cameraZoom": false,
+  "deliveredDuration": 0.62,
+  "keyboardLinger": 0.5,
+  "keyboardTransition": 0.25,
+  "messageHold": 0.3,
+  "mediaTiming": {
+    "menuOpen": 0.28,
+    "menuHold": 0.62,
+    "photosDelay": 0.3,
+    "photosOpen": 0.38,
+    "photosBrowse": 1.2,
+    "photosSelect": 0.4,
+    "cameraOpen": 0.62,
+    "cameraSettle": 1.35,
+    "cameraFlash": 0.16,
+    "cameraReview": 1.55,
+    "cameraSend": 0.32
+  },
+  "sounds": {
+    "enabled": true,
+    "sentVolume": 0.82,
+    "receivedVolume": 0.78
+  },
+  "photoLibrary": [
+    {
+      "image": "./assets/photo-eiffel-tower.png",
+      "label": "Eiffel Tower"
+    },
+    {
+      "image": "./assets/photo-cozy-cafe.png",
+      "label": "Cafe table"
+    },
+    {
+      "image": "./assets/photo-coastal-road.png",
+      "label": "Coastal road"
+    },
+    {
+      "image": "./assets/photo-camera-desk.png",
+      "label": "Camera on desk"
+    },
+    {
+      "image": "./assets/photo-cozy-cafe.png",
+      "label": "Morning coffee"
+    },
+    {
+      "image": "./assets/photo-coastal-road.png",
+      "label": "Ocean view"
+    }
+  ],
+  "start": 0.65,
+  "gap": 0.9,
+  "receivedTyping": 0.82,
+  "charactersPerSecond": 12.3,
+  "messages": [
+    {
+      "side": "received",
+      "text": "send me your out-of-office proof"
+    },
+    {
+      "side": "sent",
+      "kind": "image",
+      "sendVia": "photos",
+      "image": "./assets/photo-eiffel-tower.png",
+      "libraryIndex": 0,
+      "mediaWidth": 430,
+      "mediaHeight": 515,
+      "holdDuration": 0.42,
+      "gapAfter": 1
+    },
+    {
+      "side": "received",
+      "text": "okay. now show me the real office"
+    },
+    {
+      "side": "sent",
+      "kind": "image",
+      "sendVia": "camera",
+      "image": "./assets/photo-camera-desk.png",
+      "mediaWidth": 430,
+      "mediaHeight": 650,
+      "holdDuration": 0.5,
+      "gapAfter": 0.85
+    },
+    {
+      "side": "received",
+      "text": "much more believable"
+    }
+  ]
+}
