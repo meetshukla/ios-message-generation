@@ -9,3 +9,4 @@ scratch/
 # Personal legacy reference files are intentionally local-only.
 story.json
 assets/reference-avatar.png
+.playwright-mcp/

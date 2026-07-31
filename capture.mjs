@@ -59,6 +59,13 @@ Story.photoLibrary = await Promise.all((Story.photoLibrary ?? []).map(async (Ite
     image: await inlineLocalImage(Item.image),
   };
 }));
+Story.galleryPool = await Promise.all((Story.galleryPool ?? []).map(async (Item) => {
+  if (typeof Item === "string") return inlineLocalImage(Item);
+  return {
+    ...Item,
+    image: await inlineLocalImage(Item.image),
+  };
+}));
 Story.messages = await Promise.all((Story.messages ?? []).map(async (Message) => ({
   ...Message,
   image: await inlineLocalImage(Message.image),

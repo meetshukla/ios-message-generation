@@ -6,12 +6,12 @@
   "contactName": "folk",
   "avatarText": "",
   "avatarImage": "./assets/folk-icon.png",
-  "statusTime": "9:41",
+  "statusTime": "8:45",
   "batteryLevel": 84,
-  "dynamicIsland": false,
   "silentMode": true,
-  "conversationTime": "Today 9:41 AM",
-  "readTime": "9:41 AM",
+  "unreadCount": 3482,
+  "conversationTime": "Today 8:45 AM",
+  "readTime": "8:45 AM",
   "cameraZoom": false,
   "deliveredDuration": 0.62,
   "keyboardLinger": 0.5,
@@ -28,39 +28,15 @@
     "cameraSettle": 1.35,
     "cameraFlash": 0.16,
     "cameraReview": 1.55,
-    "cameraSend": 0.32
+    "cameraSend": 0.32,
+    "photosStage": 1.0,
+    "photosSend": 0.35
   },
   "sounds": {
     "enabled": true,
     "sentVolume": 0.82,
     "receivedVolume": 0.78
   },
-  "photoLibrary": [
-    {
-      "image": "./assets/photo-eiffel-tower.png",
-      "label": "Eiffel Tower"
-    },
-    {
-      "image": "./assets/photo-cozy-cafe.png",
-      "label": "Cafe table"
-    },
-    {
-      "image": "./assets/photo-coastal-road.png",
-      "label": "Coastal road"
-    },
-    {
-      "image": "./assets/photo-camera-desk.png",
-      "label": "Camera on desk"
-    },
-    {
-      "image": "./assets/photo-cozy-cafe.png",
-      "label": "Morning coffee"
-    },
-    {
-      "image": "./assets/photo-coastal-road.png",
-      "label": "Ocean view"
-    }
-  ],
   "start": 0.65,
   "gap": 0.9,
   "receivedTyping": 0.82,
@@ -74,10 +50,9 @@
       "side": "sent",
       "kind": "image",
       "sendVia": "photos",
-      "image": "./assets/photo-eiffel-tower.png",
-      "libraryIndex": 0,
+      "image": "./assets/gallery/airplane-window.jpg",
       "mediaWidth": 430,
-      "mediaHeight": 515,
+      "mediaHeight": 573,
       "holdDuration": 0.42,
       "gapAfter": 1
     },
@@ -99,5 +74,28 @@
       "side": "received",
       "text": "much more believable"
     }
+  ],
+  "galleryPool": [
+    "./assets/gallery/airplane-window.jpg",
+    "./assets/gallery/bale-suit.jpg",
+    "./assets/gallery/black-honda.jpg",
+    "./assets/gallery/borzoi-flowers.jpg",
+    "./assets/gallery/burger-night.jpg",
+    "./assets/gallery/cart-fail.jpg",
+    "./assets/gallery/club-girl.jpg",
+    "./assets/gallery/coffee-run.jpg",
+    "./assets/gallery/gym-drive.jpg",
+    "./assets/gallery/kitchen-cook.jpg",
+    "./assets/gallery/mountain-selfie.jpg",
+    "./assets/gallery/nightclub.jpg",
+    "./assets/gallery/party-shots.png",
+    "./assets/gallery/pasta-night.png",
+    "./assets/gallery/piggyback-night.jpg",
+    "./assets/gallery/pug.jpg",
+    "./assets/gallery/rock-throw.jpg",
+    "./assets/gallery/street-blur.jpg",
+    "./assets/gallery/sunrise-run.jpg",
+    "./assets/gallery/watch-party.jpg",
+    "./assets/gallery/work-table.jpg"
   ]
 }
