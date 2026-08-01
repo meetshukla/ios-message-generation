@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "capture": "node capture.mjs"
+    "capture": "node capture.mjs",
+    "studio": "python3 -m http.server 4173"
   },
   "dependencies": {
     "playwright-core": "1.54.2"

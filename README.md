@@ -53,6 +53,18 @@ pnpm capture -- --story story-folk.json --output folk-sushi-imessage.mp4
 The output filename must end in `.mp4` and contain only letters, numbers,
 periods, underscores, or hyphens.
 
+## Preview studio
+
+```bash
+pnpm studio
+```
+
+Then open <http://localhost:4173/studio.html>. The left panel loads a story
+preset, exposes quick fields (contact, status time, battery, unread badge,
+silent mode, gallery seed) plus the full story JSON, and `Apply & Restart`
+re-renders the phone-framed mobile preview on the right. The transport bar
+supports play/pause, restart, and timeline scrubbing.
+
 ## Included stories
 
 - `story-media.json` demonstrates the Photos and Camera attachment flows.

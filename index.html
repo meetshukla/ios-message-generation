@@ -1505,7 +1505,7 @@
     const mounted = new Set();
     let typingNode = null;
     const startedAt = performance.now();
-    const forcedTimeParam = new URLSearchParams(location.search).get("t");
+    const forcedTimeParam = window.__FORCED_T__ ?? new URLSearchParams(location.search).get("t");
     const forcedTime = forcedTimeParam === null ? null : Number(forcedTimeParam);
 
     const mountBubbleShape = (bubble, side, hasTail = true) => {
