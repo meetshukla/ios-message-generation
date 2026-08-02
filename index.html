@@ -618,7 +618,7 @@
     #staging-card {
       position: absolute;
       z-index: 27;
-      left: 124px;
+      left: 101px;
       right: 27px;
       bottom: 596px;
       padding: 20px 20px 0;
@@ -780,6 +780,7 @@
       opacity: 0;
       visibility: hidden;
     }
+    #camera-flow.review .camera-exposure { display: none; }
     #camera-flow.review .camera-review {
       opacity: 1;
       visibility: visible;
@@ -960,8 +961,8 @@
       position: absolute;
       z-index: 4;
       inset: 0 0 auto;
-      height: 138px;
-      padding: 0 35px;
+      height: 117px;
+      padding: 24px 35px 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -975,13 +976,15 @@
       font-weight: 650;
     }
     .camera-review-image {
-      inset: 135px 0 162px;
+      inset: 117px 0 164px;
       transform: none;
+      border-radius: 28px;
+      overflow: hidden;
     }
     .review-bottom {
       position: absolute;
       inset: auto 0 0;
-      height: 162px;
+      height: 164px;
       background: #000;
     }
     .edit-control {
