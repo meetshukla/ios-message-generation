@@ -2037,16 +2037,31 @@
 
       const revealedSentEvents = schedule.filter(event => event.side === "sent" && elapsed >= event.reveal);
       const latestSentEvent = revealedSentEvents.at(-1);
+      const FlyingCameraEvent = schedule.find(event =>
+        event.kind === "image"
+        && event.sendVia === "camera"
+        && event.mediaPhases
+        && elapsed >= event.mediaPhases.sendStart
+        && elapsed < event.reveal);
+      const ReceiptEvent = FlyingCameraEvent
+        && (!latestSentEvent || FlyingCameraEvent.index > latestSentEvent.index)
+        ? FlyingCameraEvent
+        : latestSentEvent;
       document.querySelectorAll("[data-receipt]").forEach(receipt => {
-        receipt.hidden = receipt.closest(".message-row")?.dataset.index !== String(latestSentEvent?.index);
+        const IsCurrent = receipt.closest(".message-row")?.dataset.index === String(ReceiptEvent?.index);
+        receipt.hidden = !IsCurrent;
+        if (!IsCurrent) return;
+        const AppearProgress = easeOutCubic(
+          (elapsed - (ReceiptEvent.reveal + .05)) / .45
+        );
+        const SwapTime = ReceiptEvent.reveal + (story.deliveredDuration ?? .1);
+        const SwapDip = Math.abs(elapsed - SwapTime) < .16
+          ? clamp01(Math.abs(elapsed - SwapTime) / .16)
+          : 1;
+        receipt.style.opacity = String(AppearProgress * SwapDip);
+        receipt.style.transform = `translateY(${(1 - AppearProgress) * 6}px)`;
+        receipt.textContent = elapsed >= SwapTime ? `Read ${story.readTime}` : "Delivered";
       });
-      if (latestSentEvent) {
-        const latestReceipt = conversation.querySelector(`[data-index="${latestSentEvent.index}"] [data-receipt]`);
-        const hasBeenRead = elapsed >= latestSentEvent.reveal + (story.deliveredDuration ?? .1);
-        if (latestReceipt) {
-          latestReceipt.textContent = hasBeenRead ? `Read ${story.readTime}` : "Delivered";
-        }
-      }
 
       conversation.scrollTop = conversation.scrollHeight;
       const latestReveal = [...schedule].reverse().find(event => elapsed >= event.reveal);
