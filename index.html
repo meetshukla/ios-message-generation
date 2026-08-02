@@ -959,6 +959,16 @@
       opacity: 0;
       pointer-events: none;
     }
+    #photo-fly {
+      position: absolute;
+      z-index: 70;
+      visibility: hidden;
+      background-position: center;
+      background-size: cover;
+      will-change: transform, opacity;
+      pointer-events: none;
+      box-shadow: 0 10px 40px rgba(0,0,0,.18);
+    }
     .review-top {
       position: absolute;
       z-index: 4;
@@ -1205,6 +1215,7 @@
       </div>
       <div id="camera-flash"></div>
     </div>
+    <div id="photo-fly"></div>
   </div>
 
   <script>
@@ -1360,7 +1371,7 @@
       cameraSettle: story.mediaTiming?.cameraSettle ?? 1.15,
       cameraFlash: story.mediaTiming?.cameraFlash ?? .16,
       cameraReview: story.mediaTiming?.cameraReview ?? 1.35,
-      cameraSend: story.mediaTiming?.cameraSend ?? .3,
+      cameraSend: story.mediaTiming?.cameraSend ?? .55,
     };
     const schedule = [];
     let cursor = story.start;
@@ -1892,6 +1903,48 @@
       return { pickerProgress: PickerProgress, stageProgress: StageProgress };
     };
 
+    const photoFly = document.querySelector("#photo-fly");
+    const easeInOutQuint = (Progress) => {
+      const Clamped = clamp01(Progress);
+      return Clamped < .5
+        ? 16 * Clamped ** 5
+        : 1 - Math.pow(-2 * Clamped + 2, 5) / 2;
+    };
+    const lerp = (From, To, Progress) => From + ((To - From) * Progress);
+    const updateCameraGenie = (elapsed) => {
+      let FlyVisible = false;
+      schedule.forEach(event => {
+        if (event.kind !== "image" || event.sendVia !== "camera" || !event.mediaPhases) return;
+        const Row = conversation.querySelector(`.message-row[data-index="${event.index}"]`);
+        if (!Row) return;
+        if (elapsed >= event.reveal) {
+          Row.style.opacity = "";
+          return;
+        }
+        Row.style.opacity = "0";
+        const Bubble = Row.querySelector(".media-bubble");
+        if (!Bubble || elapsed < event.mediaPhases.sendStart) return;
+        const Progress = easeInOutQuint(
+          (elapsed - event.mediaPhases.sendStart)
+          / Math.max(.01, event.reveal - event.mediaPhases.sendStart)
+        );
+        const Target = Bubble.getBoundingClientRect();
+        const StartRect = { left: 0, top: 117, width: 720, height: 1279 };
+        const Left = lerp(StartRect.left, Target.left, Progress);
+        const Top = lerp(StartRect.top, Target.top, Progress);
+        const Width = lerp(StartRect.width, Target.width, Progress);
+        const Height = lerp(StartRect.height, Target.height, Progress);
+        const FlyImage = event.image ?? event.thumbnail ?? "";
+        photoFly.style.left = `${Left}px`;
+        photoFly.style.top = `${Top}px`;
+        photoFly.style.width = `${Width}px`;
+        photoFly.style.height = `${Height}px`;
+        photoFly.style.borderRadius = `${lerp(0, 30, Progress)}px`;
+        photoFly.style.backgroundImage = FlyImage ? `url("${FlyImage}")` : "none";
+        FlyVisible = true;
+      });
+      photoFly.style.visibility = FlyVisible ? "visible" : "hidden";
+    };
     const render = (now) => {
       const elapsed = (now - startedAt) / 1000;
       if (story.statusTimeAfter && Number.isFinite(story.statusTimeChangeAt)) {
@@ -1902,6 +1955,14 @@
       }
       const active = schedule.find(event => elapsed >= event.phaseStart && elapsed < event.reveal);
       schedule.filter(event => elapsed >= event.reveal).forEach(mountMessage);
+      schedule
+        .filter(event =>
+          event.kind === "image"
+          && event.sendVia === "camera"
+          && event.mediaPhases
+          && elapsed >= event.mediaPhases.sendStart)
+        .forEach(mountMessage);
+      updateCameraGenie(elapsed);
 
       const activeText = active?.kind === "text" ? active : null;
       const activeMedia = active?.kind === "image" ? active : null;
