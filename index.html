@@ -1371,7 +1371,7 @@
       cameraSettle: story.mediaTiming?.cameraSettle ?? 1.15,
       cameraFlash: story.mediaTiming?.cameraFlash ?? .16,
       cameraReview: story.mediaTiming?.cameraReview ?? 1.35,
-      cameraSend: story.mediaTiming?.cameraSend ?? .55,
+      cameraSend: story.mediaTiming?.cameraSend ?? .75,
     };
     const schedule = [];
     let cursor = story.start;
@@ -1870,7 +1870,7 @@
             (elapsed - Phases.captureStart) / Math.max(.01, MediaTiming.cameraFlash)
           );
           cameraFlash.style.opacity = elapsed >= Phases.captureStart && elapsed <= Phases.reviewStart
-            ? String(.12 * Math.sin(Math.PI * FlashProgress))
+            ? String(.94 * Math.sin(Math.PI * FlashProgress))
             : "0";
         }
       }
@@ -1921,25 +1921,32 @@
           Row.style.opacity = "";
           return;
         }
-        Row.style.opacity = "0";
         const Bubble = Row.querySelector(".media-bubble");
-        if (!Bubble || elapsed < event.mediaPhases.sendStart) return;
-        const Progress = easeInOutQuint(
+        if (!Bubble || elapsed < event.mediaPhases.sendStart) {
+          Row.style.opacity = "0";
+          return;
+        }
+        const RawProgress = clamp01(
           (elapsed - event.mediaPhases.sendStart)
           / Math.max(.01, event.reveal - event.mediaPhases.sendStart)
         );
+        const Progress = easeInOutQuint(RawProgress);
+        const DriftProgress = easeOutCubic(RawProgress);
+        const LandingBlend = clamp01((RawProgress - .82) / .18);
+        Row.style.opacity = String(LandingBlend);
         const Target = Bubble.getBoundingClientRect();
         const StartRect = { left: 0, top: 117, width: 720, height: 1279 };
-        const Left = lerp(StartRect.left, Target.left, Progress);
+        const Left = lerp(StartRect.left, Target.left, DriftProgress);
+        const Width = lerp(StartRect.width, Target.width, DriftProgress);
         const Top = lerp(StartRect.top, Target.top, Progress);
-        const Width = lerp(StartRect.width, Target.width, Progress);
         const Height = lerp(StartRect.height, Target.height, Progress);
         const FlyImage = event.image ?? event.thumbnail ?? "";
         photoFly.style.left = `${Left}px`;
         photoFly.style.top = `${Top}px`;
         photoFly.style.width = `${Width}px`;
         photoFly.style.height = `${Height}px`;
-        photoFly.style.borderRadius = `${lerp(0, 30, Progress)}px`;
+        photoFly.style.borderRadius = `${lerp(0, 30, DriftProgress)}px`;
+        photoFly.style.opacity = String(1 - (LandingBlend * .9));
         photoFly.style.backgroundImage = FlyImage ? `url("${FlyImage}")` : "none";
         FlyVisible = true;
       });

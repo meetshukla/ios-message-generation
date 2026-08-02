@@ -26,9 +26,9 @@
     "photosSelect": 0.4,
     "cameraOpen": 0.62,
     "cameraSettle": 1.35,
-    "cameraFlash": 0.16,
+    "cameraFlash": 0.24,
     "cameraReview": 1.55,
-    "cameraSend": 0.55,
+    "cameraSend": 0.75,
     "photosStage": 1.0,
     "photosSend": 0.35
   },
