@@ -719,28 +719,53 @@
     .camera-shell {
       position: absolute;
       inset: 0;
-      background: #000;
+      background: #070707;
     }
     .camera-exposure {
       position: absolute;
       z-index: 9;
-      left: 92px;
-      top: 30px;
-      color: rgba(255,255,255,.92);
-      font-size: 16px;
-      font-weight: 500;
-      letter-spacing: .2px;
+      left: 102px;
+      top: 37px;
+      display: flex;
+      align-items: flex-start;
+      gap: 2px;
+      color: rgba(255,255,255,.94);
     }
-    .camera-privacy-dot {
+    .camera-exposure sup {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: .3px;
+      line-height: 1;
+      margin-top: 2px;
+    }
+    .camera-exposure b {
+      font-size: 27px;
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: .3px;
+      font-variant-numeric: tabular-nums;
+    }
+    .camera-island {
       position: absolute;
       z-index: 9;
-      left: 395px;
-      top: 49px;
-      width: 10px;
-      height: 10px;
+      left: 50%;
+      top: 18px;
+      width: 223px;
+      height: 62px;
+      transform: translateX(-50%);
+      border-radius: 31px;
+      background: #000;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.045);
+    }
+    .camera-island i {
+      position: absolute;
+      left: 145px;
+      top: 27px;
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
       background: #30d158;
-      box-shadow: 0 0 7px rgba(48,209,88,.4);
+      box-shadow: 0 0 7px rgba(48,209,88,.45);
     }
     .camera-capture,
     .camera-review {
@@ -761,7 +786,7 @@
     }
     .camera-viewfinder {
       position: absolute;
-      inset: 174px 0 311px;
+      inset: 117px 0 164px;
       overflow: hidden;
       background: #171717;
     }
@@ -779,147 +804,150 @@
       background:
         linear-gradient(90deg,transparent 33.15%,rgba(255,255,255,.32) 33.25% 33.45%,transparent 33.55% 66.4%,rgba(255,255,255,.32) 66.5% 66.7%,transparent 66.8%),
         linear-gradient(180deg,transparent 33.15%,rgba(255,255,255,.32) 33.25% 33.45%,transparent 33.55% 66.4%,rgba(255,255,255,.32) 66.5% 66.7%,transparent 66.8%);
-      opacity: .7;
+      opacity: 0;
     }
-    .camera-top-controls {
-      position: absolute;
-      z-index: 4;
-      inset: 129px 28px auto 30px;
-      height: 66px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .camera-circle-button,
+    .camera-close,
     .camera-flip,
     .edit-circle {
-      width: 66px;
-      height: 66px;
       display: grid;
       place-items: center;
       border-radius: 50%;
-      background: rgba(38,38,40,.78);
-      backdrop-filter: blur(16px);
+      background: rgba(58,55,50,.5);
+      backdrop-filter: blur(14px);
     }
-    .camera-circle-button { font-size: 37px; font-weight: 260; }
-    .camera-format {
-      display: none;
+    .edit-circle { width: 66px; height: 66px; }
+    .camera-close {
       position: absolute;
-      left: 78px;
-      height: 48px;
-      align-items: center;
-      padding: 0 14px;
-      border-radius: 19px;
-      color: rgba(255,255,255,.94);
-      background: rgba(52,52,54,.75);
-      font-size: 15px;
-      font-weight: 650;
-      letter-spacing: .3px;
-      backdrop-filter: blur(16px);
+      z-index: 4;
+      left: 35px;
+      top: 141px;
+      width: 58px;
+      height: 58px;
     }
-    .camera-tools {
-      width: 132px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0;
-      overflow: hidden;
-      border-radius: 32px;
-      background: rgba(52,52,54,.75);
-      backdrop-filter: blur(16px);
+    .camera-close svg { width: 25px; height: 25px; }
+    .camera-toolbar {
+      position: absolute;
+      z-index: 4;
+      right: 27px;
+      top: 141px;
+      width: 268px;
+      height: 58px;
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      place-items: center;
+      border-radius: 29px;
+      background: rgba(48,45,41,.5);
+      backdrop-filter: blur(14px);
     }
-    .camera-tool {
-      width: 62px;
-      height: 64px;
+    .camera-toolbar svg { width: 30px; height: 30px; display: block; }
+    .camera-macro {
+      position: absolute;
+      z-index: 4;
+      left: 58px;
+      top: 1111px;
+      width: 58px;
+      height: 58px;
       display: grid;
       place-items: center;
-      border-radius: 0;
-      background: transparent;
-      font-size: 24px;
+      border-radius: 50%;
+      background: rgba(52,49,44,.5);
+      backdrop-filter: blur(14px);
     }
+    .camera-macro svg { width: 30px; height: 30px; }
     .camera-zoom {
       position: absolute;
+      z-index: 4;
       left: 50%;
-      bottom: 444px;
+      top: 1112px;
+      height: 56px;
       display: flex;
       align-items: center;
-      gap: 28px;
+      gap: 0;
       transform: translateX(-50%);
-      color: rgba(255,255,255,.85);
-      font-size: 17px;
+      color: rgba(255,255,255,.92);
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .camera-zoom span {
+      width: 64px;
+      text-align: center;
+      text-shadow: 0 1px 6px rgba(0,0,0,.45);
     }
     .camera-zoom strong {
-      width: 55px;
-      height: 55px;
+      width: 56px;
+      height: 56px;
       display: grid;
       place-items: center;
       border-radius: 50%;
       color: #ffd60a;
-      background: rgba(54,54,56,.78);
+      background: rgba(46,43,38,.6);
+      backdrop-filter: blur(10px);
       font-weight: 600;
+      font-size: 20px;
+      margin: 0 4px;
     }
     .camera-shutter {
       position: absolute;
+      z-index: 4;
       left: 50%;
-      bottom: 201px;
-      width: 148px;
-      height: 148px;
-      border: 7px solid #fff;
+      top: 1229px;
+      width: 146px;
+      height: 146px;
       border-radius: 50%;
       transform: translateX(-50%);
-      background: transparent;
+      background: rgba(38,34,29,.38);
     }
     .camera-shutter::after {
       content: "";
       position: absolute;
-      width: 120px;
-      height: 120px;
-      left: 7px;
-      top: 7px;
+      width: 113px;
+      height: 113px;
+      left: 16.5px;
+      top: 16.5px;
       border-radius: 50%;
       background: #fff;
     }
     .camera-modes {
       position: absolute;
-      left: 50%;
-      bottom: 65px;
-      width: 385px;
-      height: 86px;
-      display: grid;
-      grid-template-columns: repeat(2,1fr);
-      align-items: center;
-      transform: translateX(-50%);
-      overflow: hidden;
-      border-radius: 43px;
-      background: rgba(30,30,32,.86);
-      font-size: 18px;
-      letter-spacing: .5px;
-      text-align: center;
-      isolation: isolate;
+      z-index: 4;
+      left: 212px;
+      top: 1444px;
+      width: 295px;
+      height: 61px;
+      border-radius: 30.5px;
+      background: rgba(28,28,30,.78);
+      font-size: 21px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
     }
-    .camera-modes::after {
-      content: "";
+    .camera-modes .mode-video {
       position: absolute;
-      z-index: -1;
-      right: 5px;
-      top: 5px;
-      width: 187px;
-      height: 76px;
-      border: 2px solid rgba(255,255,255,.18);
-      border-radius: 38px;
-      background: rgba(74,74,78,.62);
+      left: 42px;
+      top: 0;
+      line-height: 61px;
+      color: rgba(255,255,255,.9);
     }
-    .camera-modes span:first-child { color: rgba(255,255,255,.72); }
-    .camera-modes span:last-child { color: #ffd60a; }
+    .camera-modes .mode-photo {
+      position: absolute;
+      right: 7px;
+      top: 7px;
+      width: 145px;
+      line-height: 44px;
+      text-align: center;
+      color: #ffd60a;
+      border: 1.5px solid rgba(255,255,255,.28);
+      border-radius: 23.5px;
+    }
     .camera-flip {
       position: absolute;
-      right: 61px;
-      bottom: 72px;
-      width: 90px;
-      height: 90px;
-      font-size: 38px;
+      z-index: 4;
+      left: 586px;
+      top: 1441px;
+      width: 72px;
+      height: 72px;
+      background: rgba(44,44,46,.9);
     }
+    .camera-flip svg { width: 34px; height: 34px; }
     #camera-flash {
       position: absolute;
       z-index: 10;
@@ -1132,26 +1160,32 @@
           <span class="battery"><span class="battery-body"><span class="battery-fill" data-battery-fill></span><span data-camera-battery class="battery-num">84</span></span></span>
         </div>
       </div>
-      <div class="camera-exposure">EV 0.0</div>
-      <div class="camera-privacy-dot"></div>
+      <div class="camera-exposure"><sup>EV</sup><b>0.0</b></div>
+      <div class="camera-island"><i></i></div>
       <div class="camera-shell">
         <div class="camera-capture">
           <div class="camera-viewfinder">
             <div class="camera-viewfinder-image"></div>
             <div class="camera-grid"></div>
           </div>
-          <div class="camera-top-controls">
-            <span class="camera-circle-button">×</span>
-            <span class="camera-format">HEIF MAX</span>
-            <span class="camera-tools">
-              <span class="camera-tool">ϟ</span>
-              <span class="camera-tool">•••</span>
-            </span>
+          <div class="camera-close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M5.5 5.5l13 13M18.5 5.5l-13 13"/></svg>
           </div>
-          <div class="camera-zoom"><span>.5</span><strong>1×</strong><span>2</span><span>3</span></div>
+          <div class="camera-toolbar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.7" stroke-linecap="round"><path d="M13.8 4.2a7.6 7.6 0 1 0 6 6 6 6 0 0 1-6-6Z" stroke-dasharray="2.1 2.6"/><path d="M4 4l16 16" stroke-width="1.9"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.7" stroke-linejoin="round"><path d="M12.5 3 7 13h4l-1.5 8L16 11h-4l1.5-8Z" transform="translate(-2.4 0) scale(.92)"/><text x="16" y="21.5" fill="rgba(255,255,255,.92)" stroke="none" font-size="9" font-weight="700" font-family="-apple-system">A</text></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><circle cx="12" cy="12" r="8.4" stroke-dasharray="1.9 2.4"/><path d="M4 4l16 16" stroke-width="1.9"/></svg>
+            <svg viewBox="0 0 24 24" fill="rgba(255,255,255,.92)"><circle cx="5.5" cy="5.5" r="1.7"/><circle cx="12" cy="5.5" r="1.7"/><circle cx="18.5" cy="5.5" r="1.7"/><circle cx="5.5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="18.5" cy="12" r="1.7"/><circle cx="5.5" cy="18.5" r="1.7"/><circle cx="12" cy="18.5" r="1.7"/><circle cx="18.5" cy="18.5" r="1.7"/></svg>
+          </div>
+          <div class="camera-macro">
+            <svg viewBox="0 0 24 24" fill="#ffd60a"><path d="M12 13.2c-2.1 0-3.8-1.7-3.8-3.8V4.2c0-.5.4-.8.9-.7l2.9 1 2.9-1c.5-.1.9.2.9.7v5.2c0 2.1-1.7 3.8-3.8 3.8Z"/><path d="M4.4 9.1c-.5-.1-.9.3-.8.8.5 2.9 2.9 5.2 5.9 5.6-1.5-1.1-2.5-2.8-2.7-4.8l-2.4-1.6ZM19.6 9.1l-2.4 1.6c-.2 2-1.2 3.7-2.7 4.8 3-.4 5.4-2.7 5.9-5.6.1-.5-.3-.9-.8-.8Z"/><path d="M11.2 14.5h1.6V21c0 .4-.4.8-.8.8s-.8-.4-.8-.8v-6.5Z"/></svg>
+          </div>
+          <div class="camera-zoom"><span>.5</span><strong>1×</strong><span>2</span><span>5</span></div>
           <div class="camera-shutter"></div>
-          <div class="camera-modes"><span>VIDEO</span><span>PHOTO</span></div>
-          <div class="camera-flip">↻</div>
+          <div class="camera-modes"><span class="mode-video">VIDEO</span><span class="mode-photo">PHOTO</span></div>
+          <div class="camera-flip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.2 10.2a8.3 8.3 0 0 0-14.6-3M3.8 13.8a8.3 8.3 0 0 0 14.6 3"/><path d="M5.6 3.6v3.8h3.8M18.4 20.4v-3.8h-3.8"/></svg>
+          </div>
         </div>
         <div class="camera-review">
           <div class="review-top"><span>Retake</span><span>Done</span></div>
