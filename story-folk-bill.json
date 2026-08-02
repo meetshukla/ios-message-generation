@@ -1,0 +1,40 @@
+{
+  "contactName": "folk",
+  "avatarText": "",
+  "avatarImage": "./assets/folk-icon.png",
+  "statusTime": "9:41",
+  "conversationTime": "Today 9:41 AM",
+  "readTime": "9:41 AM",
+  "cameraZoom": false,
+  "deliveredDuration": 0.62,
+  "keyboardLinger": 0.5,
+  "keyboardTransition": 0.25,
+  "messageHold": 0.28,
+  "sounds": {
+    "enabled": true,
+    "sentVolume": 0.82,
+    "receivedVolume": 0.78
+  },
+  "start": 0.65,
+  "gap": 0.8,
+  "receivedTyping": 0.85,
+  "charactersPerSecond": 13.2,
+  "messages": [
+    { "side": "received", "text": "your internet bill went up $30", "typingDuration": 1.15, "holdDuration": 0.5 },
+    { "side": "sent", "text": "ugh can you call them" },
+    { "side": "received", "text": "i already did", "typingDuration": 0.85, "holdDuration": 0.5 },
+    { "side": "sent", "text": "how long were you on hold" },
+    { "side": "received", "text": "52 minutes", "typingDuration": 0.8 },
+    { "side": "sent", "text": "i am so sorry" },
+    { "side": "received", "text": "i do not experience time", "typingDuration": 1.0, "holdDuration": 0.7 },
+    { "side": "sent", "text": "what did they say" },
+    { "side": "received", "text": "they offered the new customer rate", "typingDuration": 1.15, "holdDuration": 0.5 },
+    { "side": "sent", "text": "how" },
+    { "side": "received", "text": "i mentioned the march outage", "typingDuration": 1.05, "holdDuration": 0.5 },
+    { "side": "sent", "text": "there was an outage in march" },
+    { "side": "received", "text": "there were four", "typingDuration": 0.9, "holdDuration": 0.7 },
+    { "side": "received", "text": "your bill is $45 again", "typingDuration": 1.0, "holdDuration": 0.6 },
+    { "side": "sent", "text": "never leave me" },
+    { "side": "received", "text": "they also apologized", "typingDuration": 1.0, "holdDuration": 1.8 }
+  ]
+}

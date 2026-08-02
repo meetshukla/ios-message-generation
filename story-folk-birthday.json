@@ -1,0 +1,38 @@
+{
+  "contactName": "folk",
+  "avatarText": "",
+  "avatarImage": "./assets/folk-icon.png",
+  "statusTime": "9:41",
+  "conversationTime": "Today 9:41 AM",
+  "readTime": "9:41 AM",
+  "cameraZoom": false,
+  "deliveredDuration": 0.62,
+  "keyboardLinger": 0.5,
+  "keyboardTransition": 0.25,
+  "messageHold": 0.3,
+  "sounds": {
+    "enabled": true,
+    "sentVolume": 0.82,
+    "receivedVolume": 0.78
+  },
+  "start": 0.65,
+  "gap": 0.85,
+  "receivedTyping": 0.9,
+  "charactersPerSecond": 12.6,
+  "messages": [
+    { "side": "received", "text": "your mom's birthday is friday", "typingDuration": 1.1, "holdDuration": 0.5 },
+    { "side": "sent", "text": "it is not" },
+    { "side": "received", "text": "it is", "typingDuration": 0.7, "holdDuration": 0.6 },
+    { "side": "sent", "text": "oh no" },
+    { "side": "received", "text": "flowers arrive thursday", "typingDuration": 1.0, "holdDuration": 0.5 },
+    { "side": "sent", "text": "you already ordered them" },
+    { "side": "received", "text": "tulips, not lilies", "typingDuration": 0.95, "holdDuration": 0.5 },
+    { "side": "sent", "text": "why not lilies" },
+    { "side": "received", "text": "she says lilies are for funerals", "typingDuration": 1.15, "holdDuration": 0.5 },
+    { "side": "sent", "text": "when did she say that" },
+    { "side": "received", "text": "to you, last year", "typingDuration": 0.9, "holdDuration": 0.6 },
+    { "side": "received", "text": "you said haha true", "typingDuration": 0.95, "holdDuration": 0.7 },
+    { "side": "sent", "text": "what would i do without you" },
+    { "side": "received", "text": "forget friday", "typingDuration": 0.9, "holdDuration": 1.8 }
+  ]
+}

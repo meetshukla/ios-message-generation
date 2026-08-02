@@ -1,0 +1,40 @@
+{
+  "contactName": "folk",
+  "avatarText": "",
+  "avatarImage": "./assets/folk-icon.png",
+  "statusTime": "9:41",
+  "conversationTime": "Today 9:41 AM",
+  "readTime": "9:41 AM",
+  "cameraZoom": false,
+  "deliveredDuration": 0.62,
+  "keyboardLinger": 0.5,
+  "keyboardTransition": 0.25,
+  "messageHold": 0.28,
+  "sounds": {
+    "enabled": true,
+    "sentVolume": 0.82,
+    "receivedVolume": 0.78
+  },
+  "start": 0.65,
+  "gap": 0.8,
+  "receivedTyping": 0.85,
+  "charactersPerSecond": 13.2,
+  "messages": [
+    { "side": "sent", "text": "can everyone do a cabin weekend in august" },
+    { "side": "received", "text": "checking with the crew", "typingDuration": 0.9, "holdDuration": 0.6 },
+    { "side": "received", "text": "august 14 works for all six", "typingDuration": 1.1, "holdDuration": 0.5 },
+    { "side": "sent", "text": "that was fast" },
+    { "side": "received", "text": "everyone already replied to their folk", "typingDuration": 1.15, "holdDuration": 0.6 },
+    { "side": "sent", "text": "book something cheap but nice" },
+    { "side": "received", "text": "define cheap", "typingDuration": 0.8 },
+    { "side": "sent", "text": "under $200" },
+    { "side": "received", "text": "total", "typingDuration": 0.7 },
+    { "side": "sent", "text": "per person" },
+    { "side": "received", "text": "thank you", "typingDuration": 0.7, "holdDuration": 0.5 },
+    { "side": "received", "text": "found a cabin, lake access, six beds, $184 each", "typingDuration": 1.35, "holdDuration": 0.7 },
+    { "side": "sent", "text": "send it to the group" },
+    { "side": "received", "text": "booked", "typingDuration": 0.7, "holdDuration": 0.6 },
+    { "side": "sent", "text": "i said send it" },
+    { "side": "received", "text": "all six approved before you did", "typingDuration": 1.2, "holdDuration": 1.8 }
+  ]
+}

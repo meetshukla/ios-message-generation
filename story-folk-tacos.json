@@ -1,0 +1,36 @@
+{
+  "contactName": "folk",
+  "avatarText": "",
+  "avatarImage": "./assets/folk-icon.png",
+  "statusTime": "1:12",
+  "conversationTime": "Today 1:12 AM",
+  "readTime": "1:12 AM",
+  "cameraZoom": false,
+  "deliveredDuration": 0.62,
+  "keyboardLinger": 0.5,
+  "keyboardTransition": 0.25,
+  "messageHold": 0.3,
+  "sounds": {
+    "enabled": true,
+    "sentVolume": 0.82,
+    "receivedVolume": 0.78
+  },
+  "start": 0.65,
+  "gap": 0.9,
+  "receivedTyping": 0.95,
+  "charactersPerSecond": 12.3,
+  "messages": [
+    { "side": "received", "text": "taco bell · $18.47 · 1:12am", "typingDuration": 1.2, "holdDuration": 0.7 },
+    { "side": "sent", "text": "emergency" },
+    { "side": "received", "text": "what happened" },
+    { "side": "sent", "text": "i got hungry" },
+    { "side": "received", "text": "you spent $84 on groceries today", "typingDuration": 1.15 },
+    { "side": "sent", "text": "those are ingredients" },
+    { "side": "received", "text": "for what" },
+    { "side": "sent", "text": "dinners" },
+    { "side": "received", "text": "you have ordered dinner four nights in a row", "typingDuration": 1.25, "holdDuration": 0.5 },
+    { "side": "sent", "text": "can you stop tracking that" },
+    { "side": "received", "text": "yes", "typingDuration": 0.7, "holdDuration": 0.9 },
+    { "side": "received", "text": "right after you explain the groceries", "typingDuration": 1.3, "holdDuration": 1.8 }
+  ]
+}

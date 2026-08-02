@@ -1,0 +1,37 @@
+{
+  "contactName": "folk",
+  "avatarText": "",
+  "avatarImage": "./assets/folk-icon.png",
+  "statusTime": "7:58",
+  "conversationTime": "Today 7:58 AM",
+  "readTime": "7:58 AM",
+  "cameraZoom": false,
+  "deliveredDuration": 0.62,
+  "keyboardLinger": 0.5,
+  "keyboardTransition": 0.25,
+  "messageHold": 0.3,
+  "sounds": {
+    "enabled": true,
+    "sentVolume": 0.82,
+    "receivedVolume": 0.78
+  },
+  "start": 0.65,
+  "gap": 0.85,
+  "receivedTyping": 0.9,
+  "charactersPerSecond": 12.6,
+  "messages": [
+    { "side": "received", "text": "morning", "typingDuration": 0.75, "gapAfter": 0.5 },
+    { "side": "received", "text": "rain at 9, client call at 10, dentist at 2", "typingDuration": 1.3, "holdDuration": 0.7 },
+    { "side": "sent", "text": "cancel the dentist" },
+    { "side": "received", "text": "this is the fourth time", "typingDuration": 1.0, "holdDuration": 0.5 },
+    { "side": "sent", "text": "tell them i am sick" },
+    { "side": "received", "text": "your 10am email says you are excited to present in person", "typingDuration": 1.35, "holdDuration": 0.6 },
+    { "side": "sent", "text": "different illness" },
+    { "side": "received", "text": "your dentist follows you on instagram", "typingDuration": 1.2, "holdDuration": 0.5 },
+    { "side": "sent", "text": "why is that relevant" },
+    { "side": "received", "text": "you posted brunch plans for 2:30", "typingDuration": 1.15, "holdDuration": 0.6 },
+    { "side": "sent", "text": "move brunch" },
+    { "side": "received", "text": "moved it to 3:30", "typingDuration": 0.9, "holdDuration": 0.8 },
+    { "side": "received", "text": "dentist remains undefeated", "typingDuration": 1.1, "holdDuration": 1.8 }
+  ]
+}

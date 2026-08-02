@@ -1,0 +1,40 @@
+{
+  "contactName": "folk",
+  "avatarText": "",
+  "avatarImage": "./assets/folk-icon.png",
+  "statusTime": "9:41",
+  "conversationTime": "Today 9:41 AM",
+  "readTime": "9:41 AM",
+  "cameraZoom": false,
+  "deliveredDuration": 0.62,
+  "keyboardLinger": 0.5,
+  "keyboardTransition": 0.25,
+  "messageHold": 0.28,
+  "sounds": {
+    "enabled": true,
+    "sentVolume": 0.82,
+    "receivedVolume": 0.78
+  },
+  "start": 0.65,
+  "gap": 0.8,
+  "receivedTyping": 0.85,
+  "charactersPerSecond": 13.2,
+  "messages": [
+    { "side": "sent", "text": "find somewhere impressive for dinner friday" },
+    { "side": "received", "text": "date or apology", "typingDuration": 0.9, "holdDuration": 0.5 },
+    { "side": "sent", "text": "date" },
+    { "side": "received", "text": "first date", "typingDuration": 0.75 },
+    { "side": "sent", "text": "yes" },
+    { "side": "received", "text": "she does not eat shellfish", "typingDuration": 1.1, "holdDuration": 0.6 },
+    { "side": "sent", "text": "how do you know that" },
+    { "side": "received", "text": "you told me after cancelling your last date with her", "typingDuration": 1.3, "holdDuration": 0.6 },
+    { "side": "sent", "text": "i forgot about that" },
+    { "side": "received", "text": "she did not", "typingDuration": 0.85, "holdDuration": 0.8 },
+    { "side": "sent", "text": "somewhere quiet then" },
+    { "side": "received", "text": "booked 8pm, italian, corner table", "typingDuration": 1.2, "holdDuration": 0.7 },
+    { "side": "sent", "text": "perfect" },
+    { "side": "received", "text": "reminder set for 6pm", "typingDuration": 0.95, "holdDuration": 0.5 },
+    { "side": "sent", "text": "for the reservation" },
+    { "side": "received", "text": "to leave the house", "typingDuration": 1.0, "holdDuration": 1.8 }
+  ]
+}

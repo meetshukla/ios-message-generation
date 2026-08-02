@@ -1,0 +1,39 @@
+{
+  "contactName": "folk",
+  "avatarText": "",
+  "avatarImage": "./assets/folk-icon.png",
+  "statusTime": "5:42",
+  "conversationTime": "Today 5:42 PM",
+  "readTime": "5:42 PM",
+  "cameraZoom": false,
+  "deliveredDuration": 0.62,
+  "keyboardLinger": 0.5,
+  "keyboardTransition": 0.25,
+  "messageHold": 0.28,
+  "sounds": {
+    "enabled": true,
+    "sentVolume": 0.82,
+    "receivedVolume": 0.78
+  },
+  "start": 0.65,
+  "gap": 0.8,
+  "receivedTyping": 0.85,
+  "charactersPerSecond": 13.0,
+  "messages": [
+    { "side": "received", "text": "your package says delivered", "typingDuration": 1.05, "holdDuration": 0.5 },
+    { "side": "sent", "text": "there is nothing outside" },
+    { "side": "received", "text": "check the porch two doors down", "typingDuration": 1.1, "holdDuration": 0.5 },
+    { "side": "sent", "text": "which one" },
+    { "side": "received", "text": "the one your package is on", "typingDuration": 1.0, "holdDuration": 0.7 },
+    { "side": "sent", "text": "got it" },
+    { "side": "received", "text": "your other package lands tomorrow", "typingDuration": 1.1, "holdDuration": 0.5 },
+    { "side": "sent", "text": "what other package" },
+    { "side": "received", "text": "the one from 2:14am", "typingDuration": 0.95, "holdDuration": 0.6 },
+    { "side": "sent", "text": "i do not remember ordering anything" },
+    { "side": "received", "text": "a bread maker", "typingDuration": 0.9, "holdDuration": 0.8 },
+    { "side": "sent", "text": "return it" },
+    { "side": "received", "text": "return label is in your email", "typingDuration": 1.05, "holdDuration": 0.6 },
+    { "side": "sent", "text": "thank you" },
+    { "side": "received", "text": "2am you sends his regards", "typingDuration": 1.05, "holdDuration": 1.8 }
+  ]
+}

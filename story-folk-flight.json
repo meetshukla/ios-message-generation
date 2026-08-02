@@ -1,0 +1,37 @@
+{
+  "contactName": "folk",
+  "avatarText": "",
+  "avatarImage": "./assets/folk-icon.png",
+  "statusTime": "2:11",
+  "conversationTime": "Today 2:11 PM",
+  "readTime": "2:11 PM",
+  "cameraZoom": false,
+  "deliveredDuration": 0.62,
+  "keyboardLinger": 0.5,
+  "keyboardTransition": 0.25,
+  "messageHold": 0.3,
+  "sounds": {
+    "enabled": true,
+    "sentVolume": 0.82,
+    "receivedVolume": 0.78
+  },
+  "start": 0.65,
+  "gap": 0.85,
+  "receivedTyping": 0.9,
+  "charactersPerSecond": 12.6,
+  "messages": [
+    { "side": "received", "text": "your 6pm flight is delayed to 9:40", "typingDuration": 1.2, "holdDuration": 0.6 },
+    { "side": "sent", "text": "no" },
+    { "side": "received", "text": "i rebooked you on the 3:15", "typingDuration": 1.1, "holdDuration": 0.6 },
+    { "side": "sent", "text": "that leaves in an hour" },
+    { "side": "received", "text": "yes", "typingDuration": 0.7 },
+    { "side": "sent", "text": "i am not packed" },
+    { "side": "received", "text": "you never unpacked from denver", "typingDuration": 1.15, "holdDuration": 0.6 },
+    { "side": "sent", "text": "that bag is laundry" },
+    { "side": "received", "text": "the 3:15 has wifi and your seat", "typingDuration": 1.15, "holdDuration": 0.5 },
+    { "side": "sent", "text": "fine" },
+    { "side": "received", "text": "boarding pass is in your wallet", "typingDuration": 1.1, "holdDuration": 0.7 },
+    { "side": "sent", "text": "how did you know i would say yes" },
+    { "side": "received", "text": "you have never once chosen the airport at 9:40", "typingDuration": 1.35, "holdDuration": 1.8 }
+  ]
+}

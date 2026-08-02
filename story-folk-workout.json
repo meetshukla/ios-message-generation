@@ -1,0 +1,38 @@
+{
+  "contactName": "folk",
+  "avatarText": "",
+  "avatarImage": "./assets/folk-icon.png",
+  "statusTime": "9:12",
+  "conversationTime": "Today 9:12 PM",
+  "readTime": "9:12 PM",
+  "cameraZoom": false,
+  "deliveredDuration": 0.62,
+  "keyboardLinger": 0.5,
+  "keyboardTransition": 0.25,
+  "messageHold": 0.3,
+  "sounds": {
+    "enabled": true,
+    "sentVolume": 0.82,
+    "receivedVolume": 0.78
+  },
+  "start": 0.65,
+  "gap": 0.85,
+  "receivedTyping": 0.9,
+  "charactersPerSecond": 12.6,
+  "messages": [
+    { "side": "received", "text": "workout is at 7am", "typingDuration": 0.95, "holdDuration": 0.5 },
+    { "side": "sent", "text": "cancel it" },
+    { "side": "received", "text": "you told me not to let you", "typingDuration": 1.1, "holdDuration": 0.6 },
+    { "side": "sent", "text": "i changed my mind" },
+    { "side": "received", "text": "you predicted this", "typingDuration": 0.95, "holdDuration": 0.5 },
+    { "side": "sent", "text": "when" },
+    { "side": "received", "text": "sunday, after two espressos", "typingDuration": 1.05, "holdDuration": 0.6 },
+    { "side": "received", "text": "quote, future me is weak", "typingDuration": 1.0, "holdDuration": 0.8 },
+    { "side": "sent", "text": "delete that quote" },
+    { "side": "received", "text": "setting three alarms", "typingDuration": 0.95, "holdDuration": 0.5 },
+    { "side": "sent", "text": "three" },
+    { "side": "received", "text": "past you was very specific", "typingDuration": 1.05, "holdDuration": 0.6 },
+    { "side": "sent", "text": "i hate him" },
+    { "side": "received", "text": "he said that too", "typingDuration": 0.95, "holdDuration": 1.8 }
+  ]
+}
