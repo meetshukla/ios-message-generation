@@ -844,17 +844,17 @@
     .camera-macro {
       position: absolute;
       z-index: 4;
-      left: 58px;
-      top: 1111px;
-      width: 58px;
-      height: 58px;
+      left: 57px;
+      top: 1110px;
+      width: 60px;
+      height: 60px;
       display: grid;
       place-items: center;
       border-radius: 50%;
       background: rgba(52,49,44,.5);
       backdrop-filter: blur(14px);
     }
-    .camera-macro svg { width: 30px; height: 30px; }
+    .camera-macro svg { width: 34px; height: 34px; }
     .camera-zoom {
       position: absolute;
       z-index: 4;
@@ -866,7 +866,7 @@
       gap: 0;
       transform: translateX(-50%);
       color: rgba(255,255,255,.92);
-      font-size: 20px;
+      font-size: 24px;
       font-weight: 600;
     }
     .camera-zoom span {
@@ -875,8 +875,8 @@
       text-shadow: 0 1px 6px rgba(0,0,0,.45);
     }
     .camera-zoom strong {
-      width: 56px;
-      height: 56px;
+      width: 60px;
+      height: 60px;
       display: grid;
       place-items: center;
       border-radius: 50%;
@@ -884,71 +884,73 @@
       background: rgba(46,43,38,.6);
       backdrop-filter: blur(10px);
       font-weight: 600;
-      font-size: 20px;
+      font-size: 22px;
       margin: 0 4px;
     }
     .camera-shutter {
       position: absolute;
       z-index: 4;
       left: 50%;
-      top: 1229px;
-      width: 146px;
-      height: 146px;
+      top: 1233px;
+      width: 138px;
+      height: 138px;
       border-radius: 50%;
       transform: translateX(-50%);
-      background: rgba(38,34,29,.38);
+      background: rgba(46,42,33,.46);
+      backdrop-filter: blur(5px);
     }
     .camera-shutter::after {
       content: "";
       position: absolute;
       width: 113px;
       height: 113px;
-      left: 16.5px;
-      top: 16.5px;
+      left: 12.5px;
+      top: 12.5px;
       border-radius: 50%;
       background: #fff;
     }
     .camera-modes {
       position: absolute;
       z-index: 4;
-      left: 212px;
-      top: 1444px;
+      left: 203px;
+      top: 1435px;
       width: 295px;
-      height: 61px;
-      border-radius: 30.5px;
-      background: rgba(28,28,30,.78);
+      height: 79px;
+      border-radius: 39.5px;
+      background: rgba(28,28,30,.85);
       font-size: 21px;
       font-weight: 600;
       letter-spacing: 1.2px;
     }
     .camera-modes .mode-video {
       position: absolute;
-      left: 42px;
+      left: 34px;
       top: 0;
-      line-height: 61px;
-      color: rgba(255,255,255,.9);
+      line-height: 79px;
+      color: rgba(255,255,255,.92);
     }
     .camera-modes .mode-photo {
       position: absolute;
-      right: 7px;
-      top: 7px;
+      right: 5px;
+      top: 5.5px;
       width: 145px;
-      line-height: 44px;
+      line-height: 65px;
       text-align: center;
       color: #ffd60a;
-      border: 1.5px solid rgba(255,255,255,.28);
-      border-radius: 23.5px;
+      background: rgba(118,118,128,.26);
+      border: 1.5px solid rgba(255,255,255,.16);
+      border-radius: 34px;
     }
     .camera-flip {
       position: absolute;
       z-index: 4;
-      left: 586px;
-      top: 1441px;
-      width: 72px;
-      height: 72px;
-      background: rgba(44,44,46,.9);
+      left: 582px;
+      top: 1435px;
+      width: 80px;
+      height: 80px;
+      background: rgba(33,33,35,.96);
     }
-    .camera-flip svg { width: 34px; height: 34px; }
+    .camera-flip svg { width: 38px; height: 38px; }
     #camera-flash {
       position: absolute;
       z-index: 10;
@@ -1181,13 +1183,13 @@
             <svg viewBox="0 0 24 24" fill="rgba(255,255,255,.92)"><circle cx="5.5" cy="5.5" r="1.7"/><circle cx="12" cy="5.5" r="1.7"/><circle cx="18.5" cy="5.5" r="1.7"/><circle cx="5.5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="18.5" cy="12" r="1.7"/><circle cx="5.5" cy="18.5" r="1.7"/><circle cx="12" cy="18.5" r="1.7"/><circle cx="18.5" cy="18.5" r="1.7"/></svg>
           </div>
           <div class="camera-macro">
-            <svg viewBox="0 0 24 24" fill="#ffd60a"><path d="M12 13.2c-2.1 0-3.8-1.7-3.8-3.8V4.2c0-.5.4-.8.9-.7l2.9 1 2.9-1c.5-.1.9.2.9.7v5.2c0 2.1-1.7 3.8-3.8 3.8Z"/><path d="M4.4 9.1c-.5-.1-.9.3-.8.8.5 2.9 2.9 5.2 5.9 5.6-1.5-1.1-2.5-2.8-2.7-4.8l-2.4-1.6ZM19.6 9.1l-2.4 1.6c-.2 2-1.2 3.7-2.7 4.8 3-.4 5.4-2.7 5.9-5.6.1-.5-.3-.9-.8-.8Z"/><path d="M11.2 14.5h1.6V21c0 .4-.4.8-.8.8s-.8-.4-.8-.8v-6.5Z"/></svg>
+            <svg viewBox="0 0 24 24" fill="#ffd60a"><path d="M6.7 3.6c.3-.2.7-.2.9.1L9.9 6l1.5-2.7c.25-.45.95-.45 1.2 0L14.1 6l2.3-2.3c.25-.3.65-.3.9-.1.2.15.3.35.3.6v5.1c0 3.1-2.5 5.6-5.6 5.6s-5.6-2.5-5.6-5.6V4.2c0-.25.1-.45.3-.6Z"/><path d="M11.25 16.2h1.5v4.9c0 .4-.35.75-.75.75s-.75-.35-.75-.75v-4.9Z"/><path d="M10.7 18.9c-3-.4-5.4-2.6-6-5.5 3 .3 5.3 2.2 6 4.7v.8ZM13.3 18.9v-.8c.7-2.5 3-4.4 6-4.7-.6 2.9-3 5.1-6 5.5Z"/></svg>
           </div>
           <div class="camera-zoom"><span>.5</span><strong>1×</strong><span>2</span><span>5</span></div>
           <div class="camera-shutter"></div>
           <div class="camera-modes"><span class="mode-video">VIDEO</span><span class="mode-photo">PHOTO</span></div>
           <div class="camera-flip">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.2 10.2a8.3 8.3 0 0 0-14.6-3M3.8 13.8a8.3 8.3 0 0 0 14.6 3"/><path d="M5.6 3.6v3.8h3.8M18.4 20.4v-3.8h-3.8"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M19.9 10.5a8.1 8.1 0 0 0-14-3.4M4.1 13.5a8.1 8.1 0 0 0 14 3.4"/><path d="M6.9 4.1 5.6 7.5l3.5 1" fill="#fff"/><path d="M17.1 19.9l1.3-3.4-3.5-1" fill="#fff"/></svg>
           </div>
         </div>
         <div class="camera-review">
@@ -1373,15 +1375,14 @@
         if (sendVia === "camera") {
           const CameraReady = MenuEnd + MediaTiming.cameraOpen;
           const CaptureStart = CameraReady + MediaTiming.cameraSettle;
-          const ReviewStart = CaptureStart + MediaTiming.cameraFlash;
-          const SendStart = ReviewStart + MediaTiming.cameraReview;
+          const SendStart = CaptureStart + MediaTiming.cameraFlash + .3;
           const Reveal = SendStart + MediaTiming.cameraSend;
           mediaPhases = {
             menuEnd: MenuEnd,
             sourceStart: MenuEnd,
             sourceReady: CameraReady,
             captureStart: CaptureStart,
-            reviewStart: ReviewStart,
+            reviewStart: Number.POSITIVE_INFINITY,
             sendStart: SendStart,
           };
           duration = Reveal - cursor;
